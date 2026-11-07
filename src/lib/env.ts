@@ -1,0 +1,14 @@
+/** Server-side environment access. Nothing here is exposed to the browser. */
+export function getEnv() {
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) throw new Error("DATABASE_URL is not set");
+  return {
+    databaseUrl,
+    directUrl: process.env.DIRECT_URL || databaseUrl,
+    databaseSsl: process.env.DATABASE_SSL === "true",
+    authSecret: process.env.AUTH_SECRET || "",
+    timezone: process.env.APP_TIMEZONE || "UTC",
+    appUrl: process.env.APP_URL || "",
+    isProd: process.env.NODE_ENV === "production",
+  };
+}
