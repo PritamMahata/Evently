@@ -36,7 +36,7 @@ export default async function Home() {
   return (
     <div className="space-y-16 sm:space-y-24 pb-8">
       {/* 2. HERO SECTION */}
-      <section className="grid items-center gap-10 py-6 sm:py-12 lg:gap-14">
+      <section className="grid items-center gap-10 py-6 sm:py-12 lg:grid-cols-[1.1fr_1fr] lg:gap-14">
         <div className="space-y-6">
           {/* Eyebrow */}
           <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-accent/50 px-3.5 py-1.5 text-xs sm:text-sm font-semibold uppercase tracking-wider text-primary shadow-2xs">
@@ -78,6 +78,11 @@ export default async function Home() {
               <Link href={secondaryCtaHref}>{secondaryCtaLabel}</Link>
             </Button>
           </div>
+        </div>
+
+        {/* Live event capacity dashboard card */}
+        <div className="w-full">
+          <HeroCapacityCard events={heroEvents} />
         </div>
       </section>
 
