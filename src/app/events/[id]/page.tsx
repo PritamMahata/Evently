@@ -130,6 +130,16 @@ export default async function EventDetailPage({
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_22rem]">
       <article className="min-w-0 space-y-6">
+        {event.banner_url && (
+          <div className="relative overflow-hidden rounded-2xl border bg-muted shadow-sm aspect-[21/9]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={event.banner_url}
+              alt={event.title}
+              className="h-full w-full object-cover"
+            />
+          </div>
+        )}
         <div className="space-y-3">
           <EventStatusBadge event={event} />
           <h1 className="text-balance text-3xl font-semibold sm:text-4xl">

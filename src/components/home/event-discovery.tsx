@@ -117,10 +117,21 @@ export function EventDiscovery({ events }: { events: EventRecord[] }) {
             return (
               <div
                 key={event.id}
-                className="group relative flex flex-col justify-between rounded-xl border border-border/80 bg-card p-5.5 shadow-2xs transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-md"
+                className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-border/80 bg-card shadow-2xs transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-md"
               >
-                <div>
-                  {/* Card Header: Date pill and status */}
+                {event.banner_url && (
+                  <div className="relative aspect-[16/9] w-full overflow-hidden border-b bg-muted">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={event.banner_url}
+                      alt={event.title}
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                )}
+                <div className="flex flex-1 flex-col justify-between p-5.5">
+                  <div>
+                    {/* Card Header: Date pill and status */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="flex flex-col items-center justify-center rounded-lg border border-border/80 bg-muted/50 px-3 py-1.5 text-center font-mono">
@@ -218,7 +229,8 @@ export function EventDiscovery({ events }: { events: EventRecord[] }) {
                   )}
                 </div>
               </div>
-            );
+            </div>
+          );
           })}
         </div>
       )}

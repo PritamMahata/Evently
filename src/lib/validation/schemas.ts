@@ -48,6 +48,13 @@ export const eventSchema = z.object({
     .int("Seats must be a whole number.")
     .min(1, "Seat limit must be at least 1.")
     .max(100000, "Seat limit is too large."),
+  bannerUrl: z
+    .string()
+    .trim()
+    .url("Invalid banner image URL.")
+    .or(z.literal(""))
+    .optional()
+    .nullable(),
 });
 export type EventInput = z.infer<typeof eventSchema>;
 

@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { BannerUpload } from "./banner-upload";
 
 interface Props {
   mode: "create" | "edit";
@@ -35,6 +36,7 @@ const EMPTY: EventInput = {
   eventTime: "",
   venue: "",
   seatLimit: 50,
+  bannerUrl: "",
 };
 
 export function EventForm({
@@ -89,6 +91,22 @@ export function EventForm({
             <AlertDescription>{formError}</AlertDescription>
           </Alert>
         )}
+        <FormField
+          control={form.control}
+          name="bannerUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <BannerUpload
+                  value={field.value}
+                  onChange={field.onChange}
+                  disabled={isSubmitting}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="title"

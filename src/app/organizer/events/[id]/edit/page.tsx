@@ -50,6 +50,7 @@ export default async function EditEventPage({
                 eventTime: event.event_time,
                 venue: event.venue,
                 seatLimit: event.seat_limit,
+                bannerUrl: event.banner_url || "",
               }}
             />
           </CardContent>

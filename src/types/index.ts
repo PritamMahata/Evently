@@ -28,6 +28,7 @@ export interface EventRecord {
   venue: string;
   seat_limit: number;
   status: EventStatus;
+  banner_url?: string | null;
   registered_count: number;
   is_past: boolean;
   created_at: Date;

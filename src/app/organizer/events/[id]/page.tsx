@@ -81,6 +81,16 @@ export default async function OrganizerEventPage({
           )}
         </div>
       </div>
+      {event.banner_url && (
+        <div className="mb-6 relative overflow-hidden rounded-2xl border bg-muted shadow-sm aspect-[21/9] max-h-72">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={event.banner_url}
+            alt={event.title}
+            className="h-full w-full object-cover"
+          />
+        </div>
+      )}
       {event.status === "CANCELLED" && (
         <Alert variant="destructive" className="mb-6">
           <AlertTitle>This event is cancelled</AlertTitle>

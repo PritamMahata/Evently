@@ -74,4 +74,29 @@ describe("organizer event management", () => {
     await expect(makeEvent(orgA, { title: "x" })).rejects.toMatchObject({ code: "VALIDATION_ERROR" });
     await expect(makeEvent(orgA, { seatLimit: 0 })).rejects.toMatchObject({ code: "VALIDATION_ERROR" });
   });
+
+  it("creates and updates an event with a banner image URL", async () => {
+    const banner = "https://res.cloudinary.com/demo/image/upload/sample.jpg";
+    const ev = await createEvent(orgA, {
+      title: "Banner Test Event",
+      description: "Testing banner upload persistence.",
+      eventDate: dateFromNow(15),
+      eventTime: "18:00",
+      venue: "Cloudinary Stage",
+      seatLimit: 100,
+      bannerUrl: banner,
+    });
+    expect(ev.banner_url).toBe(banner);
+
+    const updated = await updateEvent(orgA, ev.id, {
+      title: "Banner Test Event Updated",
+      description: "Testing banner upload persistence updated.",
+      eventDate: dateFromNow(15),
+      eventTime: "18:00",
+      venue: "Cloudinary Stage",
+      seatLimit: 100,
+      bannerUrl: "https://res.cloudinary.com/demo/image/upload/v2.jpg",
+    });
+    expect(updated.banner_url).toBe("https://res.cloudinary.com/demo/image/upload/v2.jpg");
+  });
 });

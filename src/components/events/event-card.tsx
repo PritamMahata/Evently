@@ -16,7 +16,17 @@ import { EventStatusBadge } from "./status-badge";
 
 export function EventCard({ event }: { event: EventRecord }) {
   return (
-    <Card className="group relative flex h-full flex-col justify-between transition-all duration-200 hover:shadow-lg hover:ring-foreground/10 focus-within:ring-[3px] focus-within:ring-ring/40">
+    <Card className="group relative flex h-full flex-col justify-between overflow-hidden transition-all duration-200 hover:shadow-lg hover:ring-foreground/10 focus-within:ring-[3px] focus-within:ring-ring/40">
+      {event.banner_url && (
+        <div className="relative aspect-[16/9] w-full overflow-hidden border-b bg-muted">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={event.banner_url}
+            alt={event.title}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        </div>
+      )}
       <CardHeader>
         <CardTitle className="text-lg font-semibold tracking-tight">
           <Link

@@ -12,7 +12,7 @@ const EVENT_SELECT = `
   SELECT e.id, e.organizer_id, u.name AS organizer_name, e.title, e.description,
          to_char(e.event_date, 'YYYY-MM-DD') AS event_date,
          to_char(e.event_time, 'HH24:MI')    AS event_time,
-         e.venue, e.seat_limit, e.status,
+         e.venue, e.seat_limit, e.status, e.banner_url,
          (SELECT count(*)::int FROM registrations r WHERE r.event_id = e.id) AS registered_count,
          ((e.event_date + e.event_time) <= (now() AT TIME ZONE $1)) AS is_past,
          e.created_at, e.updated_at
@@ -70,9 +70,18 @@ export async function createEvent(actor: SessionUser | null, raw: EventInput): P
   if (!(await isFuture(input.eventDate, input.eventTime)))
     throw new AppError("EVENT_DATE_IN_PAST", "Events must be scheduled in the future.", { eventDate: "Choose a date and time in the future." });
   const row = await queryOne<{ id: string }>(
-    `INSERT INTO events (organizer_id, title, description, event_date, event_time, venue, seat_limit)
-     VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-    [user.id, input.title, input.description, input.eventDate, input.eventTime, input.venue, input.seatLimit],
+    `INSERT INTO events (organizer_id, title, description, event_date, event_time, venue, seat_limit, banner_url)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
+    [
+      user.id,
+      input.title,
+      input.description,
+      input.eventDate,
+      input.eventTime,
+      input.venue,
+      input.seatLimit,
+      input.bannerUrl || null,
+    ],
   );
   return getEvent(row!.id);
 }
@@ -110,8 +119,17 @@ export async function updateEvent(actor: SessionUser | null, id: string, raw: Ev
           { seatLimit: `Must be at least ${taken} (current registrations).` },
         );
       await client.query(
-        `UPDATE events SET title=$2, description=$3, event_date=$4, event_time=$5, venue=$6, seat_limit=$7, updated_at=now() WHERE id=$1`,
-        [id, input.title, input.description, input.eventDate, input.eventTime, input.venue, input.seatLimit],
+        `UPDATE events SET title=$2, description=$3, event_date=$4, event_time=$5, venue=$6, seat_limit=$7, banner_url=$8, updated_at=now() WHERE id=$1`,
+        [
+          id,
+          input.title,
+          input.description,
+          input.eventDate,
+          input.eventTime,
+          input.venue,
+          input.seatLimit,
+          input.bannerUrl !== undefined ? input.bannerUrl || null : null,
+        ],
       );
     });
   } catch (err) {
