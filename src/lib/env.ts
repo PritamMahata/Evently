@@ -8,7 +8,9 @@ export function getEnv() {
     databaseSsl: process.env.DATABASE_SSL === "true",
     authSecret: process.env.AUTH_SECRET || "",
     timezone: process.env.APP_TIMEZONE || "UTC",
-    appUrl: process.env.APP_URL || "",
+    appUrl: process.env.APP_URL || "http://localhost:3000",
+    resendApiKey: process.env.RESEND_API_KEY || "",
+    resendFromEmail: process.env.RESEND_FROM_EMAIL || "Evently <onboarding@resend.dev>",
     isProd: process.env.NODE_ENV === "production",
   };
 }

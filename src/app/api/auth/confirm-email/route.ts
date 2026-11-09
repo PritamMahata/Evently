@@ -37,3 +37,4 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(new URL(`/confirm-email?error=${code}`, req.url));
   }
 }
+

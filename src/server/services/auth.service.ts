@@ -2,6 +2,7 @@ import crypto from "crypto";
 import { query, queryOne } from "@/lib/db/pool";
 import { getEnv } from "@/lib/env";
 import { AppError, mapDbError } from "@/lib/errors";
+import { sendConfirmationEmail } from "@/server/services/email.service";
 import { getDummyHash, hashPassword, verifyPassword } from "@/lib/auth/password";
 import type { LoginInput, SignupInput } from "@/lib/validation/schemas";
 import type { Role, SessionUser } from "@/types";
@@ -77,8 +78,8 @@ export async function confirmUserEmail(rawToken: string): Promise<SessionUser> {
 
 /** Resends an email confirmation token for an unconfirmed user */
 export async function resendConfirmationEmail(email: string): Promise<{ sent: boolean; token?: string }> {
-  const user = await queryOne<{ id: string; email_confirmed_at: Date | null }>(
-    "SELECT id, email_confirmed_at FROM users WHERE lower(email) = lower($1)",
+  const user = await queryOne<{ id: string; name: string; email_confirmed_at: Date | null }>(
+    "SELECT id, name, email_confirmed_at FROM users WHERE lower(email) = lower($1)",
     [email],
   );
 
@@ -88,6 +89,12 @@ export async function resendConfirmationEmail(email: string): Promise<{ sent: bo
   }
 
   const token = await createEmailConfirmationToken(user.id);
+  await sendConfirmationEmail({
+    to: email,
+    name: user.name,
+    token,
+  });
+
   return { sent: true, token };
 }
 
@@ -114,6 +121,11 @@ export async function signupUser(
     let confirmationToken: string | undefined;
     if (!autoConfirm) {
       confirmationToken = await createEmailConfirmationToken(user!.id);
+      await sendConfirmationEmail({
+        to: user!.email,
+        name: user!.name,
+        token: confirmationToken,
+      });
     }
 
     return {

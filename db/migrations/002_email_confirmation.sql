@@ -16,3 +16,4 @@ CREATE TABLE IF NOT EXISTS email_confirmations (
 CREATE INDEX IF NOT EXISTS email_confirmations_user_id_idx ON email_confirmations (user_id);
 CREATE INDEX IF NOT EXISTS email_confirmations_token_hash_idx ON email_confirmations (token_hash);
 CREATE INDEX IF NOT EXISTS email_confirmations_expires_at_idx ON email_confirmations (expires_at);
+
