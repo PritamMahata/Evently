@@ -82,15 +82,16 @@ export default async function OrganizerEventPage({
           )}
         </div>
       </div>
-      {event.banner_url && (
-        <div className="mb-6 relative overflow-hidden rounded-2xl border bg-muted shadow-sm aspect-[21/9] max-h-72">
-          <Image
-            src={event.banner_url}
-            alt={event.title}
-            className="h-full w-full object-cover"
-          />
-        </div>
-      )}
+      <div className="mb-6 relative overflow-hidden rounded-2xl border bg-muted shadow-sm aspect-[21/9] max-h-72">
+        <Image
+          src={event.banner_url || "/placeholder.svg"}
+          alt={event.title}
+          fill
+          priority
+          sizes="(max-width: 1024px) 100vw, 800px"
+          className="object-cover"
+        />
+      </div>
       {event.status === "CANCELLED" && (
         <Alert variant="destructive" className="mb-6">
           <AlertTitle>This event is cancelled</AlertTitle>

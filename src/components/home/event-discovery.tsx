@@ -121,23 +121,15 @@ export function EventDiscovery({ events }: { events: EventRecord[] }) {
                 key={event.id}
                 className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-border/80 bg-card shadow-2xs transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-md"
               >
-                {event.banner_url ? (
-                  <div className="relative aspect-[16/9] w-full overflow-hidden border-b bg-muted">
-                    <Image
-                      src={event.banner_url}
-                      alt={event.title}
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </div>
-                ) : (
-                  <div className="relative aspect-[16/9] w-full overflow-hidden border-b bg-muted">
-                    <Image
-                      src="./placeholder.svg"
-                      alt={"placeholder"}
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </div>
-                )}
+                <div className="relative aspect-[16/9] w-full overflow-hidden border-b bg-muted">
+                  <Image
+                    src={event.banner_url || "/placeholder.svg"}
+                    alt={event.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
                 <div className="flex flex-1 flex-col justify-between p-5.5">
                   <div>
                     {/* Card Header: Date pill and status */}
