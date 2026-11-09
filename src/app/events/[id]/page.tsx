@@ -14,12 +14,13 @@ import {
 import { getSessionUser } from "@/lib/auth/session";
 import { getEvent } from "@/server/services/events.service";
 import { loadEvent } from "@/server/page-data";
-import { isRegistered } from "@/server/services/registrations.service";
+import { canAttendeeCancelRsvp, isRegistered } from "@/server/services/registrations.service";
 import { formatDate, formatTime, seatsRemaining } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RegisterButton } from "@/components/events/register-button";
+import { CancelRsvpButton } from "@/components/events/cancel-rsvp-button";
 import { SeatMeter } from "@/components/events/seat-meter";
 import { EventStatusBadge } from "@/components/events/status-badge";
 import Image from "next/image";
@@ -48,6 +49,7 @@ export default async function EventDetailPage({
   const user = await getSessionUser();
   const registered =
     user?.role === "ATTENDEE" ? await isRegistered(user.id, id) : false;
+  const canCancel = registered ? await canAttendeeCancelRsvp(id) : false;
   const left = seatsRemaining(event);
   const isOwner = user?.role === "ORGANIZER" && user.id === event.organizer_id;
 
@@ -62,11 +64,24 @@ export default async function EventDetailPage({
             Your seat is reserved for this event.
           </AlertDescription>
         </Alert>
-        <Button variant="outline" className="w-full" asChild>
-          <a href={`/api/events/${event.id}/calendar`}>
-            <CalendarPlus /> Add to calendar (.ics)
-          </a>
-        </Button>
+        <div className="flex flex-col gap-2">
+          <Button variant="outline" className="w-full gap-2" asChild>
+            <a href={`/api/events/${event.id}/calendar`}>
+              <CalendarPlus className="size-4" /> Add to calendar (.ics)
+            </a>
+          </Button>
+          <CancelRsvpButton
+            eventId={event.id}
+            eventTitle={event.title}
+            canCancel={canCancel}
+            className="w-full"
+          />
+        </div>
+        {!canCancel && !event.is_past && event.status !== "CANCELLED" && (
+          <p className="text-center text-xs text-muted-foreground">
+            Cancellations must be made at least 1 day (24h) prior to event start.
+          </p>
+        )}
       </div>
     );
   } else if (event.status === "CANCELLED") {

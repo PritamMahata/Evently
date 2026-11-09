@@ -49,18 +49,102 @@ export async function isRegistered(userId: string, eventId: string) {
   return rows.length > 0;
 }
 
-type Row = Omit<RegistrationRecord, "event"> & { event_id: string };
+/**
+ * Cancels an attendee's RSVP for an event.
+ *
+ * Rules:
+ * - Must be an authenticated ATTENDEE.
+ * - Event must exist.
+ * - Attendee must have an existing registration.
+ * - Cannot cancel if the event is already past.
+ * - Attendee can only cancel up to 1 day (24 hours) before the event begins.
+ */
+export async function cancelRsvp(actor: SessionUser | null, eventId: string) {
+  const user = requireRole(actor, "ATTENDEE");
+  if (!uuidSchema.safeParse(eventId).success) throw new AppError("NOT_FOUND", "Event not found.");
+
+  try {
+    const result = await withTransaction(async (client) => {
+      const { rows } = await client.query<{
+        status: string;
+        is_past: boolean;
+        is_too_late: boolean;
+      }>(
+        `SELECT status,
+                ((event_date + event_time) <= (now() AT TIME ZONE $2)) AS is_past,
+                (((event_date + event_time) - (now() AT TIME ZONE $2)) < interval '1 day') AS is_too_late
+           FROM events WHERE id = $1 FOR UPDATE`,
+        [eventId, getEnv().timezone],
+      );
+
+      const ev = rows[0];
+      if (!ev) throw new AppError("NOT_FOUND", "Event not found.");
+      if (ev.is_past) {
+        throw new AppError("EVENT_PAST", "This event has already taken place.");
+      }
+      if (ev.is_too_late) {
+        throw new AppError(
+          "CANCELLATION_DEADLINE_PASSED",
+          "RSVP cancellations are only allowed at least 1 day (24 hours) before the event.",
+        );
+      }
+
+      const res = await client.query<{ id: string }>(
+        "DELETE FROM registrations WHERE event_id = $1 AND attendee_id = $2 RETURNING id",
+        [eventId, user.id],
+      );
+
+      if (res.rowCount === 0) {
+        throw new AppError("NOT_REGISTERED", "You are not registered for this event.");
+      }
+
+      return { cancelledRegistrationId: res.rows[0].id };
+    });
+
+    return {
+      success: true,
+      message: "Your RSVP has been cancelled successfully.",
+      ...result,
+      event: await getEvent(eventId),
+    };
+  } catch (err) {
+    mapDbError(err);
+  }
+}
+
+/** Checks whether the event allows cancellation (> 1 day before start, active, not past). */
+export async function canAttendeeCancelRsvp(eventId: string): Promise<boolean> {
+  if (!uuidSchema.safeParse(eventId).success) return false;
+  const rows = await query<{ can_cancel: boolean }>(
+    `SELECT (((event_date + event_time) - (now() AT TIME ZONE $2)) >= interval '1 day'
+             AND NOT ((event_date + event_time) <= (now() AT TIME ZONE $2))
+             AND status = 'ACTIVE') AS can_cancel
+       FROM events WHERE id = $1`,
+    [eventId, getEnv().timezone],
+  );
+  return rows[0]?.can_cancel ?? false;
+}
+
+type Row = Omit<RegistrationRecord, "event"> & { event_id: string; can_cancel: boolean };
 
 export async function listMyRegistrations(actor: SessionUser | null): Promise<RegistrationRecord[]> {
   const user = requireRole(actor, "ATTENDEE");
   const rows = await query<Row>(
-    `SELECT r.id AS registration_id, r.registered_at, r.event_id
+    `SELECT r.id AS registration_id, r.registered_at, r.event_id,
+            (((e.event_date + e.event_time) - (now() AT TIME ZONE $2)) >= interval '1 day'
+             AND NOT ((e.event_date + e.event_time) <= (now() AT TIME ZONE $2))
+             AND e.status = 'ACTIVE') AS can_cancel
        FROM registrations r JOIN events e ON e.id = r.event_id
       WHERE r.attendee_id = $1 ORDER BY e.event_date, e.event_time`,
-    [user.id],
+    [user.id, getEnv().timezone],
   );
   const events = await Promise.all(rows.map((r) => getEvent(r.event_id)));
-  return rows.map((r, i) => ({ registration_id: r.registration_id, registered_at: r.registered_at, event: events[i] as EventRecord }));
+  return rows.map((r, i) => ({
+    registration_id: r.registration_id,
+    registered_at: r.registered_at,
+    event: events[i] as EventRecord,
+    can_cancel: r.can_cancel ?? false,
+  }));
 }
 
 export type RegistrationStatus = "CONFIRMED" | "EVENT_CANCELLED" | "COMPLETED";

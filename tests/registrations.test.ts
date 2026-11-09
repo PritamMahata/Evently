@@ -1,8 +1,14 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import { getPool, query } from "@/lib/db/pool";
 import { cancelEvent, getEvent, getOrganizerEventWithAttendees, updateEvent } from "@/server/services/events.service";
-import { listMyRegistrations, registerForEvent, registrationIcs } from "@/server/services/registrations.service";
-import { count, dateFromNow, makeEvent, makePastEvent, makeUser } from "./helpers";
+import {
+  canAttendeeCancelRsvp,
+  cancelRsvp,
+  listMyRegistrations,
+  registerForEvent,
+  registrationIcs,
+} from "@/server/services/registrations.service";
+import { count, dateFromNow, makeEvent, makeImminentEvent, makePastEvent, makeUser } from "./helpers";
 import type { SessionUser } from "@/types";
 
 let org: SessionUser;
@@ -129,5 +135,92 @@ describe("calendar export", () => {
     const { body } = await registrationIcs(a, ev.id);
     expect(body).toContain("BEGIN:VEVENT");
     expect(body).toContain("SUMMARY:Test Event");
+  });
+});
+
+describe("cancel RSVP", () => {
+  it("cancels RSVP successfully when event is > 1 day away and releases the seat", async () => {
+    const ev = await makeEvent(org, { seatLimit: 5 });
+    const a = await makeUser("ATTENDEE");
+
+    // Register
+    await registerForEvent(a, ev.id);
+    expect((await getEvent(ev.id)).registered_count).toBe(1);
+    expect(await canAttendeeCancelRsvp(ev.id)).toBe(true);
+
+    const mineBefore = await listMyRegistrations(a);
+    expect(mineBefore).toHaveLength(1);
+    expect(mineBefore[0].can_cancel).toBe(true);
+
+    // Cancel RSVP
+    const res = await cancelRsvp(a, ev.id);
+    expect(res?.success).toBe(true);
+    expect(res?.event.registered_count).toBe(0);
+
+    // Verify registrations list is now empty
+    const mineAfter = await listMyRegistrations(a);
+    expect(mineAfter).toHaveLength(0);
+
+    // Verify attendee is removed from organizer attendee list
+    const { attendees } = await getOrganizerEventWithAttendees(org, ev.id);
+    expect(attendees).toHaveLength(0);
+
+    // Attendee can register again
+    await registerForEvent(a, ev.id);
+    expect((await getEvent(ev.id)).registered_count).toBe(1);
+  });
+
+  it("rejects cancellation when the event begins in less than 1 day (cutoff passed)", async () => {
+    const imminentId = await makeImminentEvent(org);
+    const a = await makeUser("ATTENDEE");
+
+    // Manually register for imminent event
+    await query("INSERT INTO registrations (event_id, attendee_id) VALUES ($1, $2)", [imminentId, a.id]);
+    expect((await getEvent(imminentId)).registered_count).toBe(1);
+    expect(await canAttendeeCancelRsvp(imminentId)).toBe(false);
+
+    // Try to cancel: should be rejected
+    await expect(cancelRsvp(a, imminentId)).rejects.toMatchObject({
+      code: "CANCELLATION_DEADLINE_PASSED",
+      message: expect.stringContaining("at least 1 day"),
+    });
+
+    // Seat remains registered
+    expect((await getEvent(imminentId)).registered_count).toBe(1);
+  });
+
+  it("rejects cancellation if attendee is not registered", async () => {
+    const ev = await makeEvent(org);
+    const a = await makeUser("ATTENDEE");
+    await expect(cancelRsvp(a, ev.id)).rejects.toMatchObject({
+      code: "NOT_REGISTERED",
+      message: "You are not registered for this event.",
+    });
+  });
+
+  it("rejects cancellation for past events", async () => {
+    const pastId = await makePastEvent(org);
+    const a = await makeUser("ATTENDEE");
+    await query("INSERT INTO registrations (event_id, attendee_id) VALUES ($1, $2)", [pastId, a.id]);
+
+    await expect(cancelRsvp(a, pastId)).rejects.toMatchObject({
+      code: "EVENT_PAST",
+    });
+  });
+
+  it("organizers and anonymous users cannot cancel attendee RSVPs", async () => {
+    const ev = await makeEvent(org);
+    const a = await makeUser("ATTENDEE");
+    await registerForEvent(a, ev.id);
+
+    await expect(cancelRsvp(org, ev.id)).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(cancelRsvp(null, ev.id)).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+  });
+
+  it("unknown event id returns 404 NOT_FOUND", async () => {
+    const a = await makeUser("ATTENDEE");
+    await expect(cancelRsvp(a, "00000000-0000-0000-0000-000000000000")).rejects.toMatchObject({
+      code: "NOT_FOUND",
+    });
   });
 });

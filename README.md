@@ -14,7 +14,7 @@ Two roles, chosen at signup:
 - **Authentication & Verification** — Email/password auth with bcrypt-12 hashing, DB-backed HTTP-only session cookies, and Supabase PostgreSQL email confirmation with single-use SHA-256 tokens and Resend email delivery.
 - **Role-Based Access & Ownership** — Strict RBAC and per-event ownership checks enforced across Route Handlers and Server Component layouts (HTTP 401 / 403 / 307 responses).
 - **Event Lifecycle & Media Uploads** — Event CRUD with Cloudinary-backed banner image uploads, drag-and-drop file picker, live 21:9 preview, quick theme presets, and soft cancellation preserving registration history.
-- **Atomic Registration & Concurrency** — Database row-level locking (`FOR UPDATE`) and database triggers guarantee seat limits are never exceeded even under simultaneous concurrent registrations.
+- **Atomic Registration & RSVP Cancellation** — Database row-level locking (`FOR UPDATE`) and database triggers guarantee seat limits are never exceeded even under simultaneous concurrent registrations; attendees can cancel reservations up to 1 day before the event, instantly releasing seats.
 - **Modern Responsive SaaS Interface** — Live capacity hero monitor, trust/value strip, event discovery with search and filters, feature showcase, password visibility toggle, accessible Radix dialogs/sheets, and dark mode.
 - **Comprehensive Bonus Features** — Search & filters, organizer dashboard & analytics, CSV export, `.ics` calendar export, Cloudinary banner uploads, and email confirmation.
 
@@ -57,7 +57,8 @@ Full reference: [`docs/DATABASE.md`](docs/DATABASE.md).
 | 3 | Organizers manage only their own events | `assertOwner` on edit/cancel/attendees/export |
 | 4 | Events must be in the future; no registration for past/cancelled | `isFuture()` (SQL clock, app timezone), checks in service, trigger for cancelled |
 | 5 | Seat limit can't drop below registrations | locked count check in `updateEvent`; trigger `enforce_seat_limit_change` |
-| 6 | All of the above without the UI | rules live in services/DB; verified by direct HTTP and vitest suites |
+| 6 | Attendee RSVP cancellation cutoff | Allowed up to 1 day (24h) before event starts; blocked if < 24h away or past (`cancelRsvp`) |
+| 7 | All of the above without the UI | rules live in services/DB; verified by direct HTTP and vitest suites |
 
 ### Concurrency / overbooking protection
 

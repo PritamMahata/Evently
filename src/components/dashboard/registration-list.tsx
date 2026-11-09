@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { RegistrationStatusBadge } from "@/components/events/status-badge";
+import { CancelRsvpButton } from "@/components/events/cancel-rsvp-button";
 import { formatDate, formatDateTimeStamp, formatTime } from "@/lib/utils";
 import { registrationStatus } from "@/server/services/registrations.service";
 import type { RegistrationRecord } from "@/types";
@@ -66,16 +67,26 @@ export function RegistrationTable({
                   />
                 </TableCell>
                 <TableCell className="text-right">
-                  {registrationStatus(r.event) === "CONFIRMED" && (
-                    <Button size="sm" variant="ghost" asChild>
-                      <a
-                        href={`/api/events/${r.event.id}/calendar`}
-                        aria-label={`Add ${r.event.title} to calendar`}
-                      >
-                        <CalendarPlus /> .ics
-                      </a>
-                    </Button>
-                  )}
+                  <div className="flex items-center justify-end gap-1.5">
+                    {registrationStatus(r.event) === "CONFIRMED" && (
+                      <>
+                        <Button size="sm" variant="ghost" asChild>
+                          <a
+                            href={`/api/events/${r.event.id}/calendar`}
+                            aria-label={`Add ${r.event.title} to calendar`}
+                          >
+                            <CalendarPlus /> .ics
+                          </a>
+                        </Button>
+                        <CancelRsvpButton
+                          eventId={r.event.id}
+                          eventTitle={r.event.title}
+                          canCancel={r.can_cancel ?? false}
+                          size="sm"
+                        />
+                      </>
+                    )}
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
@@ -112,6 +123,23 @@ export function RegistrationTable({
               <p className="text-xs text-muted-foreground">
                 Registered {formatDateTimeStamp(r.registered_at)}
               </p>
+              {registrationStatus(r.event) === "CONFIRMED" && (
+                <div className="flex items-center gap-2 pt-2 border-t border-border/60">
+                  <Button size="sm" variant="outline" className="flex-1 gap-1 text-xs" asChild>
+                    <a href={`/api/events/${r.event.id}/calendar`} download>
+                      <CalendarPlus className="size-3.5" />
+                      Add to calendar
+                    </a>
+                  </Button>
+                  <CancelRsvpButton
+                    eventId={r.event.id}
+                    eventTitle={r.event.title}
+                    canCancel={r.can_cancel ?? false}
+                    size="sm"
+                    className="flex-1"
+                  />
+                </div>
+              )}
             </Card>
           </li>
         ))}

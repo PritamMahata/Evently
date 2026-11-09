@@ -35,4 +35,14 @@ export async function makePastEvent(organizer: SessionUser) {
   return row!.id;
 }
 
+/** Inserts an event starting in 2 hours (less than 1 day away, within the cancellation cutoff). */
+export async function makeImminentEvent(organizer: SessionUser) {
+  const row = await queryOne<{ id: string }>(
+    `INSERT INTO events (organizer_id, title, description, event_date, event_time, venue, seat_limit)
+     VALUES ($1, 'Imminent Event', 'Starts soon.', (now() AT TIME ZONE 'UTC')::date, ((now() AT TIME ZONE 'UTC') + interval '2 hours')::time, 'Quick Hall', 10) RETURNING id`,
+    [organizer.id],
+  );
+  return row!.id;
+}
+
 export const count = async (sql: string, params: unknown[] = []) => (await query<{ n: number }>(sql, params))[0].n;

@@ -39,6 +39,7 @@ export interface RegistrationRecord {
   registration_id: string;
   registered_at: Date;
   event: EventRecord;
+  can_cancel?: boolean;
 }
 
 export interface AttendeeRecord {
