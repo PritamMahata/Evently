@@ -6,16 +6,27 @@ export function configureCloudinary(): boolean {
   const env = getEnv();
 
   if (env.cloudinaryUrl) {
-    cloudinary.config({
-      cloudinary_url: env.cloudinaryUrl,
-      secure: true,
-    });
-    return true;
+    const match = env.cloudinaryUrl.match(/^cloudinary:\/\/([^:]+):([^@]+)@(.+)$/);
+    if (match) {
+      const [, apiKey, apiSecret, cloudName] = match;
+      cloudinary.config({
+        cloud_name: cloudName,
+        api_key: apiKey,
+        api_secret: apiSecret,
+        secure: true,
+      });
+      return true;
+    }
   }
 
-  if (env.cloudinaryCloudName && env.cloudinaryApiKey && env.cloudinaryApiSecret) {
+  const cloudName =
+    env.cloudinaryCloudName && env.cloudinaryCloudName !== "your_cloud_name"
+      ? env.cloudinaryCloudName
+      : "";
+
+  if (cloudName && env.cloudinaryApiKey && env.cloudinaryApiSecret) {
     cloudinary.config({
-      cloud_name: env.cloudinaryCloudName,
+      cloud_name: cloudName,
       api_key: env.cloudinaryApiKey,
       api_secret: env.cloudinaryApiSecret,
       secure: true,

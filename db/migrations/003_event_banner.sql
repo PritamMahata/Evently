@@ -3,3 +3,4 @@
 ALTER TABLE events ADD COLUMN IF NOT EXISTS banner_url TEXT;
 
 COMMENT ON COLUMN events.banner_url IS 'Public URL of the event banner image hosted on Cloudinary or external storage.';
+
