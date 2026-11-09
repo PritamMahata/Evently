@@ -164,8 +164,8 @@ export function SignupForm() {
       setFormError(res.error.message);
       return;
     }
-    toast.success("Account created. Welcome to Evently!");
-    router.push(homeFor(res.data.user.role));
+    toast.success("Account created! We've sent a verification email to your inbox.");
+    router.push(`/confirm-email?email=${encodeURIComponent(values.email)}`);
     router.refresh();
   }
 

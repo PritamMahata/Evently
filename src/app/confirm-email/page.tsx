@@ -24,6 +24,7 @@ function ConfirmEmailContent() {
   const statusParam = searchParams.get("status");
   const errorParam = searchParams.get("error");
   const tokenParam = searchParams.get("token");
+  const emailParam = searchParams.get("email");
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(statusParam === "success");
@@ -31,7 +32,7 @@ function ConfirmEmailContent() {
     errorParam ? (errorParam === "token_expired" ? "This confirmation link has expired." : "Invalid confirmation token.") : null
   );
 
-  const [resendEmail, setResendEmail] = useState("");
+  const [resendEmail, setResendEmail] = useState(emailParam || "");
   const [resending, setResending] = useState(false);
   const [manualToken, setManualToken] = useState(tokenParam || "");
 
@@ -109,6 +110,8 @@ function ConfirmEmailContent() {
               ? "Email Confirmed!"
               : error
               ? "Confirmation Failed"
+              : emailParam
+              ? "Check your inbox"
               : "Verify Your Email"}
           </CardTitle>
           <CardDescription className="text-sm">
@@ -116,6 +119,8 @@ function ConfirmEmailContent() {
               ? "Your email address has been verified in PostgreSQL. You have full access to Evently."
               : error
               ? error
+              : emailParam
+              ? `We sent a confirmation link to ${emailParam}. Please click the button inside the email to verify your address.`
               : "Confirming your email via Supabase PostgreSQL token..."}
           </CardDescription>
         </CardHeader>
@@ -135,6 +140,12 @@ function ConfirmEmailContent() {
             </div>
           ) : (
             <div className="space-y-5">
+              {emailParam && !success && (
+                <div className="rounded-lg border border-primary/20 bg-primary/5 p-3.5 text-xs text-muted-foreground leading-relaxed">
+                  We sent an email to <strong className="text-foreground">{emailParam}</strong>. Check your inbox (or spam folder) and click the verification link. You can also paste the token below.
+                </div>
+              )}
+
               {/* Manual Token Entry Form */}
               <form onSubmit={handleManualConfirm} className="space-y-3">
                 <div className="space-y-1.5">
