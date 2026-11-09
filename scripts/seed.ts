@@ -1,4 +1,6 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.local" });
+dotenv.config();
 // Migrations and seeding use the direct (non-pooled) connection when one is provided.
 if (process.env.DIRECT_URL) process.env.DATABASE_URL = process.env.DIRECT_URL;
 import { closePool, queryOne, query } from "@/lib/db/pool";

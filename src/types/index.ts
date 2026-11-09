@@ -6,6 +6,15 @@ export interface SessionUser {
   name: string;
   email: string;
   role: Role;
+  email_confirmed_at?: string | Date | null;
+}
+
+export interface EmailConfirmationRecord {
+  id: string;
+  user_id: string;
+  token_hash: string;
+  expires_at: Date;
+  created_at: Date;
 }
 
 export interface EventRecord {

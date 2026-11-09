@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { queryOne } from "@/lib/db/pool";
-import { authenticate, signupUser } from "@/server/services/auth.service";
+import {
+  authenticate,
+  signupUser,
+  confirmUserEmail,
+  resendConfirmationEmail,
+} from "@/server/services/auth.service";
 import { loginSchema, signupSchema } from "@/lib/validation/schemas";
 import { AppError } from "@/lib/errors";
 
@@ -52,5 +57,69 @@ describe("authentication", () => {
     expect(bad({ role: "ADMIN" })).toBe(false);
     expect(bad({ email: "not-an-email" })).toBe(false);
     expect(loginSchema.safeParse({ email: "a@b.co", password: "" }).success).toBe(false);
+  });
+
+  describe("email confirmation", () => {
+    it("generates a confirmation token when autoConfirm is false", async () => {
+      const user = await signupUser(
+        { ...base, email: "unconfirmed@example.com", role: "ATTENDEE" },
+        { autoConfirm: false },
+      );
+      expect(user.email_confirmed_at).toBeNull();
+      expect(user.confirmationToken).toBeDefined();
+      expect(typeof user.confirmationToken).toBe("string");
+
+      const dbUser = await queryOne<{ email_confirmed_at: Date | null }>(
+        "SELECT email_confirmed_at FROM users WHERE id = $1",
+        [user.id],
+      );
+      expect(dbUser?.email_confirmed_at).toBeNull();
+
+      const confRow = await queryOne<{ id: string; user_id: string }>(
+        "SELECT id, user_id FROM email_confirmations WHERE user_id = $1",
+        [user.id],
+      );
+      expect(confRow).toBeDefined();
+      expect(confRow?.user_id).toBe(user.id);
+    });
+
+    it("confirms user email with valid token and deletes token row", async () => {
+      const user = await signupUser(
+        { ...base, email: "confirmme@example.com", role: "ATTENDEE" },
+        { autoConfirm: false },
+      );
+      const token = user.confirmationToken!;
+
+      const confirmed = await confirmUserEmail(token);
+      expect(confirmed.id).toBe(user.id);
+      expect(confirmed.email_confirmed_at).not.toBeNull();
+
+      // Ensure token row is deleted after use (single-use token)
+      const confRow = await queryOne<{ id: string }>(
+        "SELECT id FROM email_confirmations WHERE user_id = $1",
+        [user.id],
+      );
+      expect(confRow).toBeNull();
+
+      // Trying to confirm again with the same token fails
+      await expect(confirmUserEmail(token)).rejects.toMatchObject({
+        code: "INVALID_TOKEN",
+      });
+    });
+
+    it("resendConfirmationEmail issues a new token for unconfirmed user", async () => {
+      const res = await resendConfirmationEmail("unconfirmed@example.com");
+      expect(res.sent).toBe(true);
+      expect(res.token).toBeDefined();
+
+      // Resending for non-existent or confirmed user returns sent: true without token
+      const resFake = await resendConfirmationEmail("nobody_here_12345@example.com");
+      expect(resFake.sent).toBe(true);
+      expect(resFake.token).toBeUndefined();
+
+      const resAlreadyConfirmed = await resendConfirmationEmail("ada@example.com");
+      expect(resAlreadyConfirmed.sent).toBe(true);
+      expect(resAlreadyConfirmed.token).toBeUndefined();
+    });
   });
 });

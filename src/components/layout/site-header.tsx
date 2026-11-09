@@ -48,7 +48,12 @@ export async function SiteHeader() {
           <ThemeToggle />
           {user ? (
             <div className="hidden sm:block">
-              <UserMenu name={user.name} email={user.email} role={user.role} />
+              <UserMenu
+                name={user.name}
+                email={user.email}
+                role={user.role}
+                emailConfirmed={!!user.email_confirmed_at}
+              />
             </div>
           ) : (
             <div className="items-center gap-1 flex">

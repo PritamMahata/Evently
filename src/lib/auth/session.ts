@@ -41,8 +41,8 @@ export async function clearSession() {
 export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token) return null;
-  const row = await queryOne<{ id: string; name: string; email: string; role: Role }>(
-    `SELECT u.id, u.name, u.email, u.role
+  const row = await queryOne<{ id: string; name: string; email: string; role: Role; email_confirmed_at: Date | null }>(
+    `SELECT u.id, u.name, u.email, u.role, u.email_confirmed_at
        FROM sessions s JOIN users u ON u.id = s.user_id
       WHERE s.token_hash = $1 AND s.expires_at > now()`,
     [sha256(token)],

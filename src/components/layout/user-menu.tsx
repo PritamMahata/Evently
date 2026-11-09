@@ -25,10 +25,12 @@ export function UserMenu({
   name,
   email,
   role,
+  emailConfirmed,
 }: {
   name: string;
   email: string;
   role: string;
+  emailConfirmed?: boolean;
 }) {
   const router = useRouter();
   const initials =
@@ -64,10 +66,15 @@ export function UserMenu({
             <span className="truncate text-xs font-normal text-muted-foreground">
               {email}
             </span>
-            <div className="mt-1">
+            <div className="mt-1 flex items-center gap-1.5">
               <Badge variant="outline" className="text-[11px] font-medium">
                 {role === "ORGANIZER" ? "Organizer" : "Attendee"}
               </Badge>
+              {emailConfirmed && (
+                <Badge variant="success" className="text-[10px] py-0 px-1.5 font-normal">
+                  Verified
+                </Badge>
+              )}
             </div>
           </DropdownMenuLabel>
         </DropdownMenuGroup>
