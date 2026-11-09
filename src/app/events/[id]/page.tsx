@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RegisterButton } from "@/components/events/register-button";
 import { CancelRsvpButton } from "@/components/events/cancel-rsvp-button";
+import { WhatsAppShareButton } from "@/components/events/whatsapp-share-button";
 import { SeatMeter } from "@/components/events/seat-meter";
 import { EventStatusBadge } from "@/components/events/status-badge";
 import Image from "next/image";
@@ -216,6 +217,12 @@ export default async function EventDetailPage({
           <CardContent className="space-y-5">
             <SeatMeter event={event} />
             {action}
+            <div className="pt-2 border-t border-border/60">
+              <p className="mb-2 text-xs font-medium text-muted-foreground">
+                Invite friends via WhatsApp:
+              </p>
+              <WhatsAppShareButton event={event} className="w-full" size="default" />
+            </div>
           </CardContent>
         </Card>
       </aside>

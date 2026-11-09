@@ -4,6 +4,7 @@ import { Download, Pencil, Users } from "lucide-react";
 import { requirePageUser } from "@/lib/auth/guards";
 import { getOrganizerEventWithAttendees } from "@/server/services/events.service";
 import { CancelEventButton } from "@/components/organizer/cancel-event-button";
+import { WhatsAppShareButton } from "@/components/events/whatsapp-share-button";
 import { EmptyState } from "@/components/layout/empty-state";
 import { EventStatusBadge } from "@/components/events/status-badge";
 import { SeatMeter } from "@/components/events/seat-meter";
@@ -62,7 +63,13 @@ export default async function OrganizerEventPage({
             at {formatTime(event.event_time)} — {event.venue}
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <WhatsAppShareButton
+            event={event}
+            variant="brand"
+            size="default"
+            label="Share on WhatsApp"
+          />
           <Button variant="outline" asChild>
             <Link href={`/events/${event.id}`}>Public page</Link>
           </Button>

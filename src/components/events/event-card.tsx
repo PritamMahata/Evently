@@ -13,6 +13,7 @@ import { formatDate, formatTime } from "@/lib/utils";
 import type { EventRecord } from "@/types";
 import { SeatMeter } from "./seat-meter";
 import { EventStatusBadge } from "./status-badge";
+import { WhatsAppShareButton } from "./whatsapp-share-button";
 import Image from "next/image";
 
 export function EventCard({ event }: { event: EventRecord }) {
@@ -37,7 +38,10 @@ export function EventCard({ event }: { event: EventRecord }) {
           </Link>
         </CardTitle>
         <CardAction>
-          <EventStatusBadge event={event} />
+          <div className="flex items-center gap-1.5">
+            <EventStatusBadge event={event} />
+            <WhatsAppShareButton event={event} variant="icon" />
+          </div>
         </CardAction>
         <CardDescription className="line-clamp-2 text-sm">
           {event.description}
