@@ -65,19 +65,35 @@ export function HeroCapacityCard({ events }: { events: EventRecord[] }) {
   const marqueeItems = [...track, ...track];
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-card p-6">
+    <div className="relative overflow-hidden rounded-2xl border border-border/80 bg-card p-6 shadow-md backdrop-blur-sm sm:p-7">
+      {/* Top Header Label */}
+      <div className="flex items-center justify-between pb-4 border-b border-border/60">
+        <div className="flex items-center gap-2.5">
+          <span className="relative flex size-3">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex size-3 rounded-full bg-emerald-500" />
+          </span>
+          <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-foreground">
+            Live Capacity
+          </span>
+        </div>
+        <span className="text-xs sm:text-sm font-medium text-muted-foreground">
+          Real-time database sync
+        </span>
+      </div>
+
       {/* Infinite Scrolling Marquee Track with Left and Right Shadows */}
       <div className="relative my-5 -mx-6 sm:-mx-7 overflow-hidden py-1">
         {/* Left Shadow / Gradient Fade */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute left-0 top-0 bottom-0 z-20 w-12 sm:w-20 bg-gradient-to-r from-card via-card/90 to-transparent"
+          className="pointer-events-none absolute left-0 top-0 bottom-0 z-20 w-14 sm:w-24 bg-gradient-to-r from-card via-card/90 to-transparent"
         />
 
         {/* Right Shadow / Gradient Fade */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute right-0 top-0 bottom-0 z-20 w-12 sm:w-20 bg-gradient-to-l from-card via-card/90 to-transparent"
+          className="pointer-events-none absolute right-0 top-0 bottom-0 z-20 w-14 sm:w-24 bg-gradient-to-l from-card via-card/90 to-transparent"
         />
 
         {/* Marquee Row */}
@@ -98,8 +114,8 @@ export function HeroCapacityCard({ events }: { events: EventRecord[] }) {
             if (isFull) {
               statusText = "Full";
               badgeClass =
-                "border-destructive/20 bg-destructive/10 text-destructive";
-              barClass = "bg-destructive";
+                "border-rose-500/20 bg-rose-500/10 text-rose-600 dark:text-rose-400";
+              barClass = "bg-rose-500 dark:bg-rose-600";
             } else if (left <= 5 || pct >= 80) {
               statusText = "Almost full";
               badgeClass =
@@ -113,7 +129,7 @@ export function HeroCapacityCard({ events }: { events: EventRecord[] }) {
                 href={
                   event.id.startsWith("demo-") ? "/events" : `/events/${event.id}`
                 }
-                className="group block w-[280px] sm:w-[320px] shrink-0 rounded-xl border border-border/80 bg-background/60 p-4.5 transition-all duration-200 hover:-translate-y-1 hover:border-primary/50 hover:bg-card hover:shadow-md"
+                className="group block w-[280px] sm:w-[320px] shrink-0 rounded-xl border border-border/80 bg-background/70 p-4.5 transition-all duration-200 hover:-translate-y-1 hover:border-primary/50 hover:bg-card hover:shadow-md"
               >
                 {/* Event Title & Status Badge */}
                 <div className="flex items-start justify-between gap-2.5">
@@ -164,7 +180,7 @@ export function HeroCapacityCard({ events }: { events: EventRecord[] }) {
                       className={cn(
                         "font-semibold",
                         isFull
-                          ? "text-destructive font-bold"
+                          ? "text-rose-600 dark:text-rose-400 font-bold"
                           : left <= 5
                           ? "text-amber-600 dark:text-amber-400"
                           : "text-muted-foreground",
@@ -191,15 +207,16 @@ export function HeroCapacityCard({ events }: { events: EventRecord[] }) {
       </div>
 
       {/* Footer */}
-      {/* <div className="pt-3.5 border-t border-border/50 flex items-center justify-between text-xs sm:text-sm text-muted-foreground">
+      <div className="pt-3.5 border-t border-border/50 flex items-center justify-between text-xs sm:text-sm text-muted-foreground">
         <span>Updated on every reservation</span>
         <Link
           href="/events"
-          className="font-semibold text-primary hover:underline inline-flex items-center gap-1"
+          className="font-semibold text-primary hover:underline inline-flex items-center gap-1 group"
         >
-          View all events →
+          <span>View all events</span>
+          <span className="transition-transform duration-150 group-hover:translate-x-0.5">→</span>
         </Link>
-      </div> */}
+      </div>
     </div>
   );
 }
