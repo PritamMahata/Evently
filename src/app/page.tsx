@@ -37,8 +37,8 @@ export default async function Home() {
   return (
     <div className="space-y-16 sm:space-y-24 pb-8">
       {/* 2. HERO SECTION */}
-      <section className="grid items-center gap-10 py-6 sm:py-12 lg:grid-cols-[1.1fr_1fr] lg:gap-14">
-        <StaggerContainer className="space-y-6">
+      <section className="flex flex-col items-center gap-10 py-6 sm:py-12 lg:gap-14">
+        <StaggerContainer className="w-full space-y-6">
           {/* Eyebrow */}
           <FadeInItem yOffset={8}>
             <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-accent/50 px-3.5 py-1.5 text-xs sm:text-sm font-semibold uppercase tracking-wider text-primary shadow-2xs">

@@ -22,6 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RegisterButton } from "@/components/events/register-button";
 import { SeatMeter } from "@/components/events/seat-meter";
 import { EventStatusBadge } from "@/components/events/status-badge";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 
@@ -132,8 +133,7 @@ export default async function EventDetailPage({
       <article className="min-w-0 space-y-6">
         {event.banner_url && (
           <div className="relative overflow-hidden rounded-2xl border bg-muted shadow-sm aspect-[21/9]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={event.banner_url}
               alt={event.title}
               className="h-full w-full object-cover"

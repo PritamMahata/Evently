@@ -5,6 +5,7 @@ import { UploadCloud, ImageIcon, X, Link2, Loader2, Sparkles } from "lucide-reac
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import Image from "next/image";
 
 interface BannerUploadProps {
   value?: string | null;
@@ -111,8 +112,7 @@ export function BannerUpload({ value, onChange, disabled }: BannerUploadProps) {
 
       {value ? (
         <div className="group relative overflow-hidden rounded-xl border bg-muted shadow-sm aspect-[21/9]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={value}
             alt="Event banner preview"
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-102"

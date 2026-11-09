@@ -85,12 +85,6 @@ export function SiteFooter() {
 
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-border/60 pt-6 text-sm text-muted-foreground sm:flex-row">
           <p>© {currentYear} Evently. Every seat accounted for.</p>
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-2">
-              <span className="size-2.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Real-time capacity engine</span>
-            </span>
-          </div>
         </div>
       </div>
     </footer>

@@ -13,16 +13,24 @@ import { formatDate, formatTime } from "@/lib/utils";
 import type { EventRecord } from "@/types";
 import { SeatMeter } from "./seat-meter";
 import { EventStatusBadge } from "./status-badge";
+import Image from "next/image";
 
 export function EventCard({ event }: { event: EventRecord }) {
   return (
     <Card className="group relative flex h-full flex-col justify-between overflow-hidden transition-all duration-200 hover:shadow-lg hover:ring-foreground/10 focus-within:ring-[3px] focus-within:ring-ring/40">
-      {event.banner_url && (
+      {event.banner_url ? (
         <div className="relative aspect-[16/9] w-full overflow-hidden border-b bg-muted">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={event.banner_url}
             alt={event.title}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        </div>
+      ):(
+        <div className="relative aspect-[16/9] w-full overflow-hidden border-b bg-muted">
+          <Image
+            src={"https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png"}
+            alt={"Placeholder"}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>

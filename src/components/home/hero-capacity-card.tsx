@@ -65,7 +65,7 @@ export function HeroCapacityCard({ events }: { events: EventRecord[] }) {
   const marqueeItems = [...track, ...track];
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-border/80 bg-card p-6 shadow-md backdrop-blur-sm sm:p-7">
+    <div className="relative overflow-hidden rounded-2xl p-6 sm:p-7">
       {/* Top Header Label */}
       <div className="flex items-center justify-between pb-4 border-b border-border/60">
         <div className="flex items-center gap-2.5">
@@ -74,12 +74,9 @@ export function HeroCapacityCard({ events }: { events: EventRecord[] }) {
             <span className="relative inline-flex size-3 rounded-full bg-emerald-500" />
           </span>
           <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-foreground">
-            Live Capacity
+            Events
           </span>
         </div>
-        <span className="text-xs sm:text-sm font-medium text-muted-foreground">
-          Real-time database sync
-        </span>
       </div>
 
       {/* Infinite Scrolling Marquee Track with Left and Right Shadows */}
@@ -208,7 +205,6 @@ export function HeroCapacityCard({ events }: { events: EventRecord[] }) {
 
       {/* Footer */}
       <div className="pt-3.5 border-t border-border/50 flex items-center justify-between text-xs sm:text-sm text-muted-foreground">
-        <span>Updated on every reservation</span>
         <Link
           href="/events"
           className="font-semibold text-primary hover:underline inline-flex items-center gap-1 group"

@@ -4,6 +4,7 @@ import type { EventRecord } from "@/types";
 import { formatDate, formatTime, seatsRemaining, cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Image from "next/image";
 
 export function EventDiscovery({ events }: { events: EventRecord[] }) {
   return (
@@ -20,7 +21,8 @@ export function EventDiscovery({ events }: { events: EventRecord[] }) {
             Find your next event
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground">
-            Browse upcoming events and reserve your seat before they&apos;re gone.
+            Browse upcoming events and reserve your seat before they&apos;re
+            gone.
           </p>
         </div>
 
@@ -105,7 +107,7 @@ export function EventDiscovery({ events }: { events: EventRecord[] }) {
             const isFull = left === 0;
             const pct = Math.min(
               100,
-              Math.round((event.registered_count / event.seat_limit) * 100)
+              Math.round((event.registered_count / event.seat_limit) * 100),
             );
 
             const month = formatDate(event.event_date, {
@@ -119,12 +121,19 @@ export function EventDiscovery({ events }: { events: EventRecord[] }) {
                 key={event.id}
                 className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-border/80 bg-card shadow-2xs transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-md"
               >
-                {event.banner_url && (
+                {event.banner_url ? (
                   <div className="relative aspect-[16/9] w-full overflow-hidden border-b bg-muted">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <Image
                       src={event.banner_url}
                       alt={event.title}
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                ) : (
+                  <div className="relative aspect-[16/9] w-full overflow-hidden border-b bg-muted">
+                    <Image
+                      src="./placeholder.svg"
+                      alt={"placeholder"}
                       className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                   </div>
@@ -132,105 +141,110 @@ export function EventDiscovery({ events }: { events: EventRecord[] }) {
                 <div className="flex flex-1 flex-col justify-between p-5.5">
                   <div>
                     {/* Card Header: Date pill and status */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex flex-col items-center justify-center rounded-lg border border-border/80 bg-muted/50 px-3 py-1.5 text-center font-mono">
-                        <span className="text-xs font-bold uppercase tracking-wider text-primary">
-                          {month}
-                        </span>
-                        <span className="text-lg font-black leading-none text-foreground mt-0.5">
-                          {day}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="flex flex-col items-center justify-center rounded-lg border border-border/80 bg-muted/50 px-3 py-1.5 text-center font-mono">
+                          <span className="text-xs font-bold uppercase tracking-wider text-primary">
+                            {month}
+                          </span>
+                          <span className="text-lg font-black leading-none text-foreground mt-0.5">
+                            {day}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-sm font-semibold text-foreground block">
+                            {time}
+                          </span>
+                          {event.venue && (
+                            <div className="flex items-center gap-1 text-xs text-muted-foreground truncate max-w-[150px] mt-0.5">
+                              <MapPin className="size-3.5 shrink-0 opacity-60" />
+                              <span className="truncate">{event.venue}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <span
+                        className={cn(
+                          "rounded-full border px-2.5 py-1 text-xs font-semibold",
+                          isFull
+                            ? "border-destructive/20 bg-destructive/10 text-destructive"
+                            : left <= 5
+                              ? "border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300"
+                              : "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+                        )}
+                      >
+                        {isFull ? "Full" : `${left} seats left`}
+                      </span>
+                    </div>
+
+                    {/* Title & Description */}
+                    <div className="mt-4.5">
+                      <h3 className="line-clamp-2 text-lg sm:text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
+                        <Link
+                          href={`/events/${event.id}`}
+                          className="focus:outline-none"
+                        >
+                          {event.title}
+                        </Link>
+                      </h3>
+                      {event.description && (
+                        <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+                          {event.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Footer: Capacity Bar and CTA button */}
+                  <div className="mt-6 space-y-3 pt-3.5 border-t border-border/50">
+                    <div className="space-y-1.5">
+                      <div className="flex justify-between text-xs sm:text-sm text-muted-foreground font-medium">
+                        <span>Capacity</span>
+                        <span className="font-semibold text-foreground">
+                          {event.registered_count} / {event.seat_limit}
                         </span>
                       </div>
-                      <div>
-                        <span className="text-sm font-semibold text-foreground block">{time}</span>
-                        {event.venue && (
-                          <div className="flex items-center gap-1 text-xs text-muted-foreground truncate max-w-[150px] mt-0.5">
-                            <MapPin className="size-3.5 shrink-0 opacity-60" />
-                            <span className="truncate">{event.venue}</span>
-                          </div>
-                        )}
+                      <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                        <div
+                          className={cn(
+                            "h-full rounded-full transition-all duration-300",
+                            isFull
+                              ? "bg-destructive"
+                              : pct >= 80
+                                ? "bg-amber-500"
+                                : "bg-primary",
+                          )}
+                          style={{ width: `${pct}%` }}
+                        />
                       </div>
                     </div>
 
-                    <span
-                      className={cn(
-                        "rounded-full border px-2.5 py-1 text-xs font-semibold",
-                        isFull
-                          ? "border-destructive/20 bg-destructive/10 text-destructive"
-                          : left <= 5
-                          ? "border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300"
-                          : "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
-                      )}
-                    >
-                      {isFull ? "Full" : `${left} seats left`}
-                    </span>
-                  </div>
-
-                  {/* Title & Description */}
-                  <div className="mt-4.5">
-                    <h3 className="line-clamp-2 text-lg sm:text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
-                      <Link href={`/events/${event.id}`} className="focus:outline-none">
-                        {event.title}
-                      </Link>
-                    </h3>
-                    {event.description && (
-                      <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-                        {event.description}
-                      </p>
+                    {isFull ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled
+                        className="w-full h-10 text-sm font-semibold opacity-60"
+                      >
+                        Event is full
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        asChild
+                        className="w-full h-10 text-sm font-semibold shadow-2xs group-hover:bg-primary/95"
+                      >
+                        <Link href={`/events/${event.id}`}>
+                          <span>View event</span>
+                          <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                        </Link>
+                      </Button>
                     )}
                   </div>
                 </div>
-
-                {/* Footer: Capacity Bar and CTA button */}
-                <div className="mt-6 space-y-3 pt-3.5 border-t border-border/50">
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between text-xs sm:text-sm text-muted-foreground font-medium">
-                      <span>Capacity</span>
-                      <span className="font-semibold text-foreground">
-                        {event.registered_count} / {event.seat_limit}
-                      </span>
-                    </div>
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                      <div
-                        className={cn(
-                          "h-full rounded-full transition-all duration-300",
-                          isFull
-                            ? "bg-destructive"
-                            : pct >= 80
-                            ? "bg-amber-500"
-                            : "bg-primary"
-                        )}
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  {isFull ? (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled
-                      className="w-full h-10 text-sm font-semibold opacity-60"
-                    >
-                      Event is full
-                    </Button>
-                  ) : (
-                    <Button
-                      size="sm"
-                      asChild
-                      className="w-full h-10 text-sm font-semibold shadow-2xs group-hover:bg-primary/95"
-                    >
-                      <Link href={`/events/${event.id}`}>
-                        <span>View event</span>
-                        <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-                      </Link>
-                    </Button>
-                  )}
-                </div>
               </div>
-            </div>
-          );
+            );
           })}
         </div>
       )}
