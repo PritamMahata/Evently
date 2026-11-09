@@ -20,7 +20,7 @@ export default async function Home() {
     page: 1,
   }).catch(() => ({ events: [] }));
 
-  const heroEvents = events.slice(0, 3);
+  const heroEvents = events;
   const discoveryEvents = events.slice(0, 6);
 
   const secondaryCtaHref =
