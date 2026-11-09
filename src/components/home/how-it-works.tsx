@@ -1,4 +1,6 @@
 import { Calendar, Share2, UserCheck } from "lucide-react";
+import { FloatingHeading } from "@/components/ui/scroll-float";
+import { InteractiveCard, ViewportFadeIn } from "@/components/motion/motion-components";
 
 export function HowItWorks() {
   const steps = [
@@ -24,28 +26,28 @@ export function HowItWorks() {
 
   return (
     <section aria-labelledby="how-it-works-heading" className="space-y-8">
-      <div className="text-center max-w-2xl mx-auto space-y-2.5">
+      <ViewportFadeIn className="text-center max-w-2xl mx-auto space-y-2.5">
         <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-primary">
           Simple Workflow
         </span>
-        <h2
-          id="how-it-works-heading"
-          className="text-3xl font-extrabold tracking-tight sm:text-4xl"
-        >
-          How it works
+        <h2 id="how-it-works-heading">
+          <FloatingHeading className="text-3xl font-extrabold tracking-tight sm:text-4xl text-foreground">
+            How it works
+          </FloatingHeading>
         </h2>
         <p className="text-base sm:text-lg text-muted-foreground">
           Three straightforward steps from initial announcement to a full room.
         </p>
-      </div>
+      </ViewportFadeIn>
 
       <div className="grid gap-6 md:grid-cols-3">
         {steps.map((item, idx) => {
           const Icon = item.icon;
           return (
-            <div
+            <InteractiveCard
               key={item.step}
-              className="relative rounded-2xl border border-border/70 bg-gradient-to-b from-card to-card/60 p-7 shadow-2xs transition-all duration-200 hover:border-primary/30"
+              delay={idx * 0.12}
+              className="relative rounded-2xl border border-border/70 bg-gradient-to-b from-card to-card/60 p-7 shadow-2xs transition-all duration-200 hover:border-primary/40 hover:shadow-md"
             >
               <div className="flex items-center justify-between mb-4.5">
                 <span className="flex items-center gap-2 font-mono text-base sm:text-lg font-bold text-primary">
@@ -65,7 +67,7 @@ export function HowItWorks() {
                   →
                 </div>
               )}
-            </div>
+            </InteractiveCard>
           );
         })}
       </div>

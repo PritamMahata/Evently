@@ -1,4 +1,6 @@
 import { CalendarCheck2, ShieldCheck, TicketCheck } from "lucide-react";
+import { FloatingHeading } from "@/components/ui/scroll-float";
+import { InteractiveCard, ViewportFadeIn } from "@/components/motion/motion-components";
 
 export function FeaturesSection() {
   const features = [
@@ -27,28 +29,28 @@ export function FeaturesSection() {
 
   return (
     <section aria-labelledby="features-heading" className="space-y-8">
-      <div className="text-center max-w-2xl mx-auto space-y-2.5">
+      <ViewportFadeIn className="text-center max-w-2xl mx-auto space-y-2.5">
         <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-primary">
           Core Capabilities
         </span>
-        <h2
-          id="features-heading"
-          className="text-3xl font-extrabold tracking-tight sm:text-4xl"
-        >
-          Everything you need to run a simple event.
+        <h2 id="features-heading">
+          <FloatingHeading className="text-3xl font-extrabold tracking-tight sm:text-4xl text-foreground">
+            Everything you need to run a simple event.
+          </FloatingHeading>
         </h2>
         <p className="text-base sm:text-lg text-muted-foreground">
           Built from the ground up to eliminate spreadsheets, manual headcounts, and registration chaos.
         </p>
-      </div>
+      </ViewportFadeIn>
 
       <div className="grid gap-6 md:grid-cols-3">
-        {features.map((feature) => {
+        {features.map((feature, idx) => {
           const Icon = feature.icon;
           return (
-            <div
+            <InteractiveCard
               key={feature.title}
-              className="group relative flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-7 shadow-2xs transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-md"
+              delay={idx * 0.1}
+              className="group relative flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-7 shadow-2xs transition-all duration-200 hover:border-primary/40 hover:shadow-md"
             >
               <div className="space-y-4.5">
                 <div className="flex items-center justify-between">
@@ -68,7 +70,7 @@ export function FeaturesSection() {
                   </p>
                 </div>
               </div>
-            </div>
+            </InteractiveCard>
           );
         })}
       </div>

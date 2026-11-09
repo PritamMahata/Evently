@@ -65,23 +65,7 @@ export function HeroCapacityCard({ events }: { events: EventRecord[] }) {
   const marqueeItems = [...track, ...track];
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-border/80 bg-card p-6 shadow-md backdrop-blur-sm sm:p-7">
-      {/* Top Header Label */}
-      <div className="flex items-center justify-between pb-4 border-b border-border/60">
-        <div className="flex items-center gap-2.5">
-          <span className="relative flex size-3">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex size-3 rounded-full bg-emerald-500" />
-          </span>
-          <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-foreground">
-            Live Capacity
-          </span>
-        </div>
-        <span className="text-xs sm:text-sm font-medium text-muted-foreground">
-          Real-time database sync
-        </span>
-      </div>
-
+    <div className="relative overflow-hidden rounded-2xl bg-card p-6">
       {/* Infinite Scrolling Marquee Track with Left and Right Shadows */}
       <div className="relative my-5 -mx-6 sm:-mx-7 overflow-hidden py-1">
         {/* Left Shadow / Gradient Fade */}
@@ -207,7 +191,7 @@ export function HeroCapacityCard({ events }: { events: EventRecord[] }) {
       </div>
 
       {/* Footer */}
-      <div className="pt-3.5 border-t border-border/50 flex items-center justify-between text-xs sm:text-sm text-muted-foreground">
+      {/* <div className="pt-3.5 border-t border-border/50 flex items-center justify-between text-xs sm:text-sm text-muted-foreground">
         <span>Updated on every reservation</span>
         <Link
           href="/events"
@@ -215,7 +199,7 @@ export function HeroCapacityCard({ events }: { events: EventRecord[] }) {
         >
           View all events →
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 }

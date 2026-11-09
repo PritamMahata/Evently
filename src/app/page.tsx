@@ -9,6 +9,7 @@ import { EventDiscovery } from "@/components/home/event-discovery";
 import { FeaturesSection } from "@/components/home/features-section";
 import { HowItWorks } from "@/components/home/how-it-works";
 import { FinalCta } from "@/components/home/final-cta";
+import { StaggerContainer, FadeInItem } from "@/components/motion/motion-components";
 
 export const dynamic = "force-dynamic";
 
@@ -37,48 +38,56 @@ export default async function Home() {
     <div className="space-y-16 sm:space-y-24 pb-8">
       {/* 2. HERO SECTION */}
       <section className="grid items-center gap-10 py-6 sm:py-12 lg:grid-cols-[1.1fr_1fr] lg:gap-14">
-        <div className="space-y-6">
+        <StaggerContainer className="space-y-6">
           {/* Eyebrow */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-accent/50 px-3.5 py-1.5 text-xs sm:text-sm font-semibold uppercase tracking-wider text-primary shadow-2xs">
-            <Sparkles className="size-4" aria-hidden />
-            <span>Events, without the spreadsheets</span>
-          </div>
+          <FadeInItem yOffset={8}>
+            <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-accent/50 px-3.5 py-1.5 text-xs sm:text-sm font-semibold uppercase tracking-wider text-primary shadow-2xs">
+              <Sparkles className="size-4" aria-hidden />
+              <span>Events, without the spreadsheets</span>
+            </div>
+          </FadeInItem>
 
           {/* Large Headline */}
-          <h1 className="text-balance text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl xl:text-7xl leading-[1.06]">
-            Every seat accounted for.{" "}
-            <span className="block text-primary">Every guest on the list.</span>
-          </h1>
+          <FadeInItem yOffset={14}>
+            <h1 className="text-balance text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl xl:text-7xl leading-[1.06]">
+              Every seat accounted for.{" "}
+              <span className="block text-primary">Every guest on the list.</span>
+            </h1>
+          </FadeInItem>
 
           {/* Supporting Text */}
-          <p className="max-w-xl text-lg leading-relaxed text-muted-foreground sm:text-xl lg:text-2xl">
-            Evently makes it simple to publish events, manage capacity, and let
-            attendees reserve their place without overbooking.
-          </p>
+          <FadeInItem yOffset={16}>
+            <p className="max-w-xl text-lg leading-relaxed text-muted-foreground sm:text-xl lg:text-2xl">
+              Evently makes it simple to publish events, manage capacity, and let
+              attendees reserve their place without overbooking.
+            </p>
+          </FadeInItem>
 
           {/* CTA Buttons */}
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Button
-              size="lg"
-              asChild
-              className="h-12 px-6 text-base font-semibold gap-2 shadow-sm transition-all duration-150 hover:shadow-md"
-            >
-              <Link href="/events">
-                <span>Browse events</span>
-                <ArrowRight className="size-4.5" />
-              </Link>
-            </Button>
+          <FadeInItem yOffset={18}>
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <Button
+                size="lg"
+                asChild
+                className="h-12 px-6 text-base font-semibold gap-2 shadow-sm transition-all duration-150 hover:shadow-md"
+              >
+                <Link href="/events">
+                  <span>Browse events</span>
+                  <ArrowRight className="size-4.5" />
+                </Link>
+              </Button>
 
-            <Button
-              size="lg"
-              variant="outline"
-              asChild
-              className="h-12 px-6 text-base font-medium shadow-2xs"
-            >
-              <Link href={secondaryCtaHref}>{secondaryCtaLabel}</Link>
-            </Button>
-          </div>
-        </div>
+              <Button
+                size="lg"
+                variant="outline"
+                asChild
+                className="h-12 px-6 text-base font-medium shadow-2xs"
+              >
+                <Link href={secondaryCtaHref}>{secondaryCtaLabel}</Link>
+              </Button>
+            </div>
+          </FadeInItem>
+        </StaggerContainer>
 
         {/* Live event capacity dashboard card */}
         <div className="w-full">
