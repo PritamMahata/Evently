@@ -25,7 +25,7 @@ export interface EventRecord {
   description: string;
   event_date: string; // YYYY-MM-DD
   event_time: string; // HH:MM
-  event_deadline: string; // ISO string / timestamp
+  event_deadline?: string | null; // ISO string / timestamp
   venue: string;
   seat_limit: number;
   status: EventStatus;

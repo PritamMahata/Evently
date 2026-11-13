@@ -21,7 +21,7 @@ const EVENT_SELECT = `
          e.venue, e.seat_limit, e.status, e.banner_url,
          (SELECT count(*)::int FROM registrations r WHERE r.event_id = e.id) AS registered_count,
          ((e.event_date + e.event_time) <= (now() AT TIME ZONE $1)) AS is_past,
-         (e.event_deadline <= (now() AT TIME ZONE $1)) AS is_past_deadline,
+         (e.event_deadline IS NOT NULL AND e.event_deadline <= (now() AT TIME ZONE $1)) AS is_past_deadline,
          e.created_at, e.updated_at
     FROM events e JOIN users u ON u.id = e.organizer_id`;
 
@@ -123,6 +123,7 @@ export async function createEvent(
       { eventDate: "Choose a date and time in the future." },
     );
   if (
+    input.eventDeadline &&
     !(await isDeadlineBeforeEvent(
       input.eventDate,
       input.eventTime,
@@ -154,7 +155,7 @@ export async function createEvent(
       input.description,
       input.eventDate,
       input.eventTime,
-      input.eventDeadline,
+      input.eventDeadline || null,
       input.venue,
       input.seatLimit,
       input.bannerUrl || null,
@@ -209,6 +210,7 @@ export async function updateEvent(
           { eventDate: "Choose a date and time in the future." },
         );
       if (
+        input.eventDeadline &&
         !(await isDeadlineBeforeEvent(
           input.eventDate,
           input.eventTime,
@@ -240,7 +242,7 @@ export async function updateEvent(
           input.description,
           input.eventDate,
           input.eventTime,
-          input.eventDeadline,
+          input.eventDeadline || null,
           input.venue,
           input.seatLimit,
           input.bannerUrl !== undefined ? input.bannerUrl || null : null,

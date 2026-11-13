@@ -93,7 +93,10 @@ export const eventSchema = z
     eventDeadline: z
       .string()
       .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/, "Choose a valid date and time.")
-      .refine(isRealDateTime, "Choose a valid date and time."),
+      .refine(isRealDateTime, "Choose a valid date and time.")
+      .or(z.literal(""))
+      .optional()
+      .nullable(),
     venue: z
       .string()
       .trim()

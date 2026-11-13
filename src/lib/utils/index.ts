@@ -28,7 +28,7 @@ export function formatTime(time: string) {
   return `${h % 12 || 12}:${String(m).padStart(2, "0")} ${suffix}`;
 }
 
-export function formatDateTime(d: Date | string) {
+export function formatDateTime(d?: Date | string | null) {
   if (!d) return "";
   const dateObj = new Date(d);
   if (Number.isNaN(dateObj.getTime())) return String(d);

@@ -178,12 +178,22 @@ export function EventForm({
             name="eventDeadline"
             render={({ field }) => (
               <FormItem className="sm:col-span-2">
-                <FormLabel>Registration Deadline</FormLabel>
+                <FormLabel>
+                  Registration Deadline{" "}
+                  <span className="text-xs font-normal text-muted-foreground">
+                    (optional)
+                  </span>
+                </FormLabel>
                 <FormControl>
-                  <Input type="datetime-local" max={maxDeadline} {...field} />
+                  <Input
+                    type="datetime-local"
+                    max={maxDeadline}
+                    {...field}
+                    value={field.value ?? ""}
+                  />
                 </FormControl>
                 <FormDescription>
-                  Must be before the event date and start time.
+                  Optional cutoff for registrations. If set, must be before the event starts.
                 </FormDescription>
                 <FormMessage />
               </FormItem>

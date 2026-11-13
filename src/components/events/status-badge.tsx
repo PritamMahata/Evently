@@ -11,7 +11,7 @@ export function EventStatusBadge({
     "status" | "is_past" | "seat_limit" | "registered_count"
   > & {
     is_past_deadline?: boolean;
-    event_deadline?: string;
+    event_deadline?: string | null;
   };
 }) {
   if (event.status === "CANCELLED")

@@ -31,7 +31,7 @@ export async function registerForEvent(
       }>(
         `SELECT status, seat_limit,
                 ((event_date + event_time) <= (now() AT TIME ZONE $2)) AS is_past,
-                (event_deadline <= (now() AT TIME ZONE $2)) AS is_past_deadline
+                (event_deadline IS NOT NULL AND event_deadline <= (now() AT TIME ZONE $2)) AS is_past_deadline
            FROM events WHERE id = $1 FOR UPDATE`,
         [eventId, getEnv().timezone],
       );

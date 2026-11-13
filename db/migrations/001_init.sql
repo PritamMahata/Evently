@@ -36,7 +36,7 @@ CREATE TABLE events (
   description     text NOT NULL CHECK (char_length(description) BETWEEN 10 AND 5000),
   event_date      date NOT NULL,
   event_time      time NOT NULL,
-  event_deadline  timestamptz NOT NULL,
+  event_deadline  timestamptz,
   venue           text NOT NULL CHECK (char_length(venue) BETWEEN 2 AND 200),
   seat_limit      integer NOT NULL CHECK (seat_limit > 0 AND seat_limit <= 100000),
   status          text NOT NULL DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'CANCELLED')),
