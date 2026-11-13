@@ -102,12 +102,3 @@ When current time passes the configured `event_deadline`:
 
 ---
 
-## Key Interview Talking Points
-
-| Area | Why It Was Built This Way |
-|---|---|
-| **PostgreSQL `FOR UPDATE`** | Guarantees that time-based checks are evaluated atomically with the seat-counter check, stopping last-second race conditions. |
-| **Server-Side Rendered Checks** | Next.js Server Components evaluate `is_past_deadline` on the server so unauthenticated scrapers or bots never see an active registration button once closed. |
-| **Timezone Correctness** | Stored in PostgreSQL with `timestamptz` and normalized using `to_json` to guarantee seamless ISO string parsing across browsers without local time skew. |
-| **Defensive UX** | Dynamic HTML5 `max` attribute prevents organizers from inadvertently creating events whose cutoff is after the event has already started. |
-
