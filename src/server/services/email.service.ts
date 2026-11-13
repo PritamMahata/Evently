@@ -12,7 +12,9 @@ export async function sendConfirmationEmail(params: {
   console.log(`[EMAIL] Verification link for ${params.to}: ${confirmUrl}`);
 
   if (!env.resendApiKey) {
-    console.warn("[EMAIL] RESEND_API_KEY is not set. Skipping external email dispatch.");
+    console.warn(
+      "[EMAIL] RESEND_API_KEY is not set. Skipping external email dispatch.",
+    );
     return { ok: true };
   }
 
@@ -68,7 +70,9 @@ export async function sendConfirmationEmail(params: {
       return { ok: false, error: res.error.message };
     }
 
-    console.log(`[EMAIL] Confirmation email sent successfully via Resend. ID: ${res.data?.id}`);
+    console.log(
+      `[EMAIL] Confirmation email sent successfully via Resend. ID: ${res.data?.id}`,
+    );
     return { ok: true };
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
@@ -76,4 +80,3 @@ export async function sendConfirmationEmail(params: {
     return { ok: false, error: message };
   }
 }
-

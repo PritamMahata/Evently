@@ -1,0 +1,9 @@
+$kind: http-request
+name: 'Download Calendar (.ics)'
+method: GET
+url: '{{base_url}}/api/events/{{event_id}}/calendar'
+order: 8000
+pathVariables:
+  - key: event_id
+    value: '{{event_id}}'
+    description: UUID of the event — must be registered to download the .ics file

@@ -1,0 +1,3 @@
+$kind: collection
+name: Upload
+description: File upload endpoints — upload event banner images (ORGANIZER role required). Accepts JPEG, PNG, WebP, AVIF, or GIF up to 5 MB.

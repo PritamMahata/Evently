@@ -48,6 +48,9 @@ export default async function EditEventPage({
                 description: event.description,
                 eventDate: event.event_date,
                 eventTime: event.event_time,
+                eventDeadline: event.event_deadline
+                  ? new Date(event.event_deadline).toISOString().slice(0, 16)
+                  : "",
                 venue: event.venue,
                 seatLimit: event.seat_limit,
                 bannerUrl: event.banner_url || "",

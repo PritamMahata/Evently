@@ -1,0 +1,20 @@
+$kind: http-request
+name: 'Create Event'
+method: POST
+url: '{{base_url}}/api/events'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "title": "Tech Meetup 2026",
+      "description": "A community gathering for developers to share ideas and network.",
+      "eventDate": "2026-12-15",
+      "eventTime": "18:00",
+      "venue": "Innovation Hub, 123 Main St",
+      "seatLimit": 100,
+      "bannerUrl": ""
+    }

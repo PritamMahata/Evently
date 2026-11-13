@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarDays, Clock, MapPin } from "lucide-react";
+import { CalendarDays, Clock, Hourglass, MapPin } from "lucide-react";
 import {
   Card,
   CardAction,
@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { formatDate, formatTime } from "@/lib/utils";
+import { formatDate, formatDateTime, formatTime } from "@/lib/utils";
 import type { EventRecord } from "@/types";
 import { SeatMeter } from "./seat-meter";
 import { EventStatusBadge } from "./status-badge";
@@ -60,6 +60,14 @@ export function EventCard({ event }: { event: EventRecord }) {
             <Clock className="size-4 shrink-0 text-foreground/70" aria-hidden />
             <span>{formatTime(event.event_time)}</span>
           </li>
+          {event.event_deadline && (
+            <li className="flex items-center gap-2 text-xs">
+              <Hourglass className="size-4 shrink-0 text-foreground/70" aria-hidden />
+              <span>
+                Deadline: {formatDateTime(event.event_deadline)}
+              </span>
+            </li>
+          )}
           <li className="flex items-center gap-2">
             <MapPin
               className="size-4 shrink-0 text-foreground/70"

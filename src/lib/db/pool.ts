@@ -15,18 +15,26 @@ export function getPool(): Pool {
   return globalForPg.__pgPool;
 }
 
-export async function query<T extends QueryResultRow>(text: string, params: unknown[] = []): Promise<T[]> {
+export async function query<T extends QueryResultRow>(
+  text: string,
+  params: unknown[] = [],
+): Promise<T[]> {
   const res = await getPool().query<T>(text, params);
   return res.rows;
 }
 
-export async function queryOne<T extends QueryResultRow>(text: string, params: unknown[] = []): Promise<T | null> {
+export async function queryOne<T extends QueryResultRow>(
+  text: string,
+  params: unknown[] = [],
+): Promise<T | null> {
   const rows = await query<T>(text, params);
   return rows[0] ?? null;
 }
 
 /** Runs `fn` in a single transaction; rolls back on any thrown error. */
-export async function withTransaction<T>(fn: (client: PoolClient) => Promise<T>): Promise<T> {
+export async function withTransaction<T>(
+  fn: (client: PoolClient) => Promise<T>,
+): Promise<T> {
   const client = await getPool().connect();
   try {
     await client.query("BEGIN");

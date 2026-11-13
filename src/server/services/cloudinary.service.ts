@@ -6,7 +6,9 @@ export function configureCloudinary(): boolean {
   const env = getEnv();
 
   if (env.cloudinaryUrl) {
-    const match = env.cloudinaryUrl.match(/^cloudinary:\/\/([^:]+):([^@]+)@(.+)$/);
+    const match = env.cloudinaryUrl.match(
+      /^cloudinary:\/\/([^:]+):([^@]+)@(.+)$/,
+    );
     if (match) {
       const [, apiKey, apiSecret, cloudName] = match;
       cloudinary.config({
@@ -62,12 +64,23 @@ export async function uploadBannerImage(
         resource_type: "image",
         allowed_formats: ["jpg", "png", "webp", "avif", "jpeg"],
         transformation: [
-          { width: 1200, height: 630, crop: "fill", gravity: "auto", quality: "auto" },
+          {
+            width: 1200,
+            height: 630,
+            crop: "fill",
+            gravity: "auto",
+            quality: "auto",
+          },
         ],
       },
       (error, result?: UploadApiResponse) => {
         if (error || !result) {
-          reject(new AppError("BAD_REQUEST", error?.message || "Failed to upload image to Cloudinary."));
+          reject(
+            new AppError(
+              "BAD_REQUEST",
+              error?.message || "Failed to upload image to Cloudinary.",
+            ),
+          );
         } else {
           resolve({
             url: result.secure_url,

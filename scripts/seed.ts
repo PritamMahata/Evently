@@ -63,9 +63,11 @@ interface SeedEvent {
   seats: number;
   days: number;
   time: string;
+  deadline: string;
   organizer: string;
   cancelled?: boolean;
   registrations: number;
+  banner_url: string;
 }
 
 async function main() {
@@ -108,8 +110,11 @@ async function main() {
       seats: 60,
       days: 7,
       time: "18:30",
+      deadline: "2026-11-19T17:00:00+05:30",
       organizer: org,
       registrations: 4,
+      banner_url:
+        "https://res.cloudinary.com/dz5o4me4n/image/upload/v1794211231/ec815715-bd4d-4a81-bf76-047e30b46fb5.png",
     },
     {
       title: "AI Workshop: Building with LLMs",
@@ -119,8 +124,11 @@ async function main() {
       seats: 40,
       days: 12,
       time: "10:00",
+      deadline: "2026-11-24T17:00:00+05:30",
       organizer: org,
       registrations: 6,
+      banner_url:
+        "https://res.cloudinary.com/dz5o4me4n/image/upload/v1794211227/d39ea38d-3832-42fe-985b-bf80e178f4dc.png",
     },
     {
       title: "Startup Networking Night",
@@ -130,8 +138,11 @@ async function main() {
       seats: 80,
       days: 5,
       time: "19:00",
+      deadline: "2026-11-17T17:00:00+05:30",
       organizer: org,
       registrations: 3,
+      banner_url:
+        "https://res.cloudinary.com/dz5o4me4n/image/upload/v1794211506/feb92f5a-c88f-444e-9546-ff2a3da6b7f2.png",
     },
     {
       title: "Open Source Hackathon",
@@ -141,8 +152,11 @@ async function main() {
       seats: 100,
       days: 21,
       time: "09:00",
+      deadline: "2026-12-03T17:00:00+05:30",
       organizer: org,
       registrations: 2,
+      banner_url:
+        "https://res.cloudinary.com/dz5o4me4n/image/upload/v1794211227/bca23ec2-1a7d-4636-8f73-feb9fe825bd0.png",
     },
     {
       title: "Web Development Masterclass",
@@ -152,8 +166,11 @@ async function main() {
       seats: 30,
       days: 30,
       time: "13:00",
+      deadline: "2026-12-12T17:00:00+05:30",
       organizer: org2,
       registrations: 1,
+      banner_url:
+        "https://res.cloudinary.com/dz5o4me4n/image/upload/v1794211227/c0c9bc0f-8f26-42a4-85b0-e69d0cdae533.png",
     },
     {
       title: "Design Systems Roundtable",
@@ -163,8 +180,11 @@ async function main() {
       seats: 5,
       days: 9,
       time: "17:30",
+      deadline: "2026-11-21T17:00:00+05:30",
       organizer: org2,
       registrations: 5,
+      banner_url:
+        "https://res.cloudinary.com/dz5o4me4n/image/upload/v1794211419/535293a3-1bcd-4a0c-a8e7-010111f5a304.png",
     },
     {
       title: "Cloud Cost Clinic",
@@ -174,9 +194,12 @@ async function main() {
       seats: 25,
       days: 14,
       time: "15:00",
+      deadline: "2026-11-25T17:00:00+05:30",
       organizer: org2,
       cancelled: true,
       registrations: 2,
+      banner_url:
+        "https://res.cloudinary.com/dz5o4me4n/image/upload/v1794211227/0955e5a8-eb1b-439b-86b1-f75ec09e0eb8.png",
     },
     {
       title: "Intro to TypeScript Evening",
@@ -186,8 +209,11 @@ async function main() {
       seats: 30,
       days: -20,
       time: "18:00",
+      deadline: "2026-10-23T17:00:00+05:30",
       organizer: org,
       registrations: 3,
+      banner_url:
+        "https://res.cloudinary.com/dz5o4me4n/image/upload/v1794211227/66c8433d-335b-4380-92f0-14f5f3bc3877.png",
     },
   ];
 
@@ -200,17 +226,40 @@ async function main() {
     if (exists) continue;
     // Past event is inserted directly: the API rightly refuses to create events in the past.
     const row = await queryOne<{ id: string }>(
-      `INSERT INTO events (organizer_id, title, description, event_date, event_time, venue, seat_limit)
-       VALUES ($1,$2,$3, (now() AT TIME ZONE $8)::date + $4::int, $5, $6, $7) RETURNING id`,
+      `INSERT INTO events (
+     organizer_id,
+     title,
+     description,
+     event_date,
+     event_time,
+     event_deadline,
+     venue,
+     seat_limit,
+     banner_url
+   )
+   VALUES (
+     $1,
+     $2,
+     $3,
+     (now() AT TIME ZONE $8)::date + $4::int,
+     $5,
+     $7::timestamptz,
+     $6,
+     $9,
+     $10
+   )
+   RETURNING id`,
       [
-        e.organizer,
-        e.title,
-        e.description,
-        e.days,
-        e.time,
-        e.venue,
-        e.seats,
-        process.env.APP_TIMEZONE || "UTC",
+        e.organizer, // $1
+        e.title, // $2
+        e.description, // $3
+        e.days, // $4
+        e.time, // $5
+        e.venue, // $6
+        e.deadline, // $7
+        process.env.APP_TIMEZONE || "UTC", // $8
+        e.seats, // $9
+        e.banner_url, // $10
       ],
     );
     const pool = [...people];

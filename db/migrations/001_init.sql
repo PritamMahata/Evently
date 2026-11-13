@@ -30,17 +30,18 @@ CREATE TABLE login_attempts (
 CREATE INDEX login_attempts_key_idx ON login_attempts (key_hash, created_at);
 
 CREATE TABLE events (
-  id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  organizer_id uuid        NOT NULL REFERENCES users (id) ON DELETE RESTRICT,
-  title        text        NOT NULL CHECK (char_length(title) BETWEEN 3 AND 120),
-  description  text        NOT NULL CHECK (char_length(description) BETWEEN 10 AND 5000),
-  event_date   date        NOT NULL,
-  event_time   time        NOT NULL,
-  venue        text        NOT NULL CHECK (char_length(venue) BETWEEN 2 AND 200),
-  seat_limit   integer     NOT NULL CHECK (seat_limit > 0 AND seat_limit <= 100000),
-  status       text        NOT NULL DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'CANCELLED')),
-  created_at   timestamptz NOT NULL DEFAULT now(),
-  updated_at   timestamptz NOT NULL DEFAULT now()
+  id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  organizer_id    uuid NOT NULL REFERENCES users (id) ON DELETE RESTRICT,
+  title           text NOT NULL CHECK (char_length(title) BETWEEN 3 AND 120),
+  description     text NOT NULL CHECK (char_length(description) BETWEEN 10 AND 5000),
+  event_date      date NOT NULL,
+  event_time      time NOT NULL,
+  event_deadline  timestamptz NOT NULL,
+  venue           text NOT NULL CHECK (char_length(venue) BETWEEN 2 AND 200),
+  seat_limit      integer NOT NULL CHECK (seat_limit > 0 AND seat_limit <= 100000),
+  status          text NOT NULL DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'CANCELLED')),
+  created_at      timestamptz NOT NULL DEFAULT now(),
+  updated_at      timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX events_organizer_id_idx ON events (organizer_id);
 CREATE INDEX events_date_idx ON events (event_date, event_time);

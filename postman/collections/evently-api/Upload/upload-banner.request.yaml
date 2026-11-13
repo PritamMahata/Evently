@@ -1,0 +1,12 @@
+$kind: http-request
+name: 'Upload Banner Image'
+method: POST
+url: '{{base_url}}/api/upload'
+order: 1000
+body:
+  type: formdata
+  content:
+    - key: file
+      type: file
+      src: ''
+      description: 'Image file to upload (JPEG, PNG, WebP, AVIF, or GIF — max 5 MB)'

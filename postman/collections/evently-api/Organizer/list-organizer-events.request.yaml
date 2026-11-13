@@ -1,0 +1,5 @@
+$kind: http-request
+name: 'List My Events (Organizer)'
+method: GET
+url: '{{base_url}}/api/organizer/events'
+order: 1000

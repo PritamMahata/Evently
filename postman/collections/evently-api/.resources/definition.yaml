@@ -1,0 +1,9 @@
+$kind: collection
+name: Evently API
+description: |-
+  REST API collection for the Evently event-management platform.
+  Covers authentication, public event discovery, attendee registrations,
+  organizer event management, file uploads, and calendar exports.
+variables:
+  - key: base_url
+    value: 'http://localhost:3000'

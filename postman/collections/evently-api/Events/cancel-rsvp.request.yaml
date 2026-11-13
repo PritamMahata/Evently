@@ -1,0 +1,9 @@
+$kind: http-request
+name: 'Cancel RSVP'
+method: DELETE
+url: '{{base_url}}/api/events/{{event_id}}/register'
+order: 7000
+pathVariables:
+  - key: event_id
+    value: '{{event_id}}'
+    description: UUID of the event to cancel RSVP for

@@ -1,0 +1,9 @@
+$kind: http-request
+name: 'Register for Event (RSVP)'
+method: POST
+url: '{{base_url}}/api/events/{{event_id}}/register'
+order: 6000
+pathVariables:
+  - key: event_id
+    value: '{{event_id}}'
+    description: UUID of the event to register for

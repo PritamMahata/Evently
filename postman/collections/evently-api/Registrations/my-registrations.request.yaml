@@ -1,0 +1,5 @@
+$kind: http-request
+name: 'My Registrations'
+method: GET
+url: '{{base_url}}/api/my-registrations'
+order: 1000

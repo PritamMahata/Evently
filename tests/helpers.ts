@@ -14,12 +14,14 @@ export function dateFromNow(days: number) {
   return d.toISOString().slice(0, 10);
 }
 
-export async function makeEvent(organizer: SessionUser, overrides: Partial<{ seatLimit: number; eventDate: string; eventTime: string; title: string }> = {}) {
+export async function makeEvent(organizer: SessionUser, overrides: Partial<{ seatLimit: number; eventDate: string; eventTime: string; eventDeadline: string; title: string }> = {}) {
+  const eventDate = overrides.eventDate ?? dateFromNow(10);
   return createEvent(organizer, {
     title: overrides.title ?? "Test Event",
     description: "A test event used by the automated suite.",
-    eventDate: overrides.eventDate ?? dateFromNow(10),
+    eventDate,
     eventTime: overrides.eventTime ?? "18:30",
+    eventDeadline: overrides.eventDeadline ?? `${eventDate}T17:00`,
     venue: "Test Hall",
     seatLimit: overrides.seatLimit ?? 10,
   });
@@ -28,8 +30,8 @@ export async function makeEvent(organizer: SessionUser, overrides: Partial<{ sea
 /** Inserts an event in the past directly (the API refuses to create one). */
 export async function makePastEvent(organizer: SessionUser) {
   const row = await queryOne<{ id: string }>(
-    `INSERT INTO events (organizer_id, title, description, event_date, event_time, venue, seat_limit)
-     VALUES ($1, 'Old Event', 'This event already happened.', current_date - 5, '10:00', 'Old Hall', 10) RETURNING id`,
+    `INSERT INTO events (organizer_id, title, description, event_date, event_time, event_deadline, venue, seat_limit)
+     VALUES ($1, 'Old Event', 'This event already happened.', current_date - 5, '10:00', now() - interval '6 days', 'Old Hall', 10) RETURNING id`,
     [organizer.id],
   );
   return row!.id;
@@ -38,8 +40,8 @@ export async function makePastEvent(organizer: SessionUser) {
 /** Inserts an event starting in 2 hours (less than 1 day away, within the cancellation cutoff). */
 export async function makeImminentEvent(organizer: SessionUser) {
   const row = await queryOne<{ id: string }>(
-    `INSERT INTO events (organizer_id, title, description, event_date, event_time, venue, seat_limit)
-     VALUES ($1, 'Imminent Event', 'Starts soon.', (now() AT TIME ZONE 'UTC')::date, ((now() AT TIME ZONE 'UTC') + interval '2 hours')::time, 'Quick Hall', 10) RETURNING id`,
+    `INSERT INTO events (organizer_id, title, description, event_date, event_time, event_deadline, venue, seat_limit)
+     VALUES ($1, 'Imminent Event', 'Starts soon.', (now() AT TIME ZONE 'UTC')::date, ((now() AT TIME ZONE 'UTC') + interval '2 hours')::time, now() + interval '1 hour', 'Quick Hall', 10) RETURNING id`,
     [organizer.id],
   );
   return row!.id;

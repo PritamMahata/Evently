@@ -1,0 +1,26 @@
+name: Globals
+values:
+  - key: base_url
+    value: 'http://localhost:3000'
+    enabled: true
+  - key: organizer_email
+    value: 'demo.organizer@example.com'
+    enabled: true
+  - key: organizer_password
+    value: 'DemoOrganizer123'
+    enabled: true
+  - key: second_organizer_email
+    value: 'second.organizer@example.com'
+    enabled: true
+  - key: second_organizer_password
+    value: 'DemoOrganizer123'
+    enabled: true
+  - key: attendee_email
+    value: 'demo.attendee@example.com'
+    enabled: true
+  - key: attendee_password
+    value: 'DemoAttendee123'
+    enabled: true
+  - key: event_id
+    value: '46c235bb-a0a0-4737-92b4-a4c2a2e4c320'
+    enabled: true

@@ -1,0 +1,14 @@
+$kind: http-request
+name: 'Confirm Email (POST)'
+method: POST
+url: '{{base_url}}/api/auth/confirm-email'
+order: 5000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "token": "{{confirmation_token}}"
+    }

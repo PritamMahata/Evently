@@ -34,6 +34,7 @@ const EMPTY: EventInput = {
   description: "",
   eventDate: "",
   eventTime: "",
+  eventDeadline:"",
   venue: "",
   seatLimit: 50,
   bannerUrl: "",
@@ -53,6 +54,10 @@ export function EventForm({
   });
   const { isSubmitting } = form.formState;
   const today = new Date().toISOString().slice(0, 10);
+  const watchedDate = form.watch("eventDate");
+  const watchedTime = form.watch("eventTime");
+  const maxDeadline =
+    watchedDate && watchedTime ? `${watchedDate}T${watchedTime}` : undefined;
 
   async function onSubmit(values: EventInput) {
     setFormError(null);
@@ -163,6 +168,23 @@ export function EventForm({
                 <FormControl>
                   <Input type="time" {...field} />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="eventDeadline"
+            render={({ field }) => (
+              <FormItem className="sm:col-span-2">
+                <FormLabel>Registration Deadline</FormLabel>
+                <FormControl>
+                  <Input type="datetime-local" max={maxDeadline} {...field} />
+                </FormControl>
+                <FormDescription>
+                  Must be before the event date and start time.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}

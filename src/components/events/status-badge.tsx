@@ -9,7 +9,10 @@ export function EventStatusBadge({
   event: Pick<
     EventRecord,
     "status" | "is_past" | "seat_limit" | "registered_count"
-  >;
+  > & {
+    is_past_deadline?: boolean;
+    event_deadline?: string;
+  };
 }) {
   if (event.status === "CANCELLED")
     return (
@@ -23,6 +26,17 @@ export function EventStatusBadge({
       <Badge variant="secondary">
         <Clock aria-hidden />
         Past
+      </Badge>
+    );
+  const isPastDeadline =
+    event.is_past_deadline ??
+    (event.event_deadline ? new Date(event.event_deadline) <= new Date() : false);
+
+  if (isPastDeadline)
+    return (
+      <Badge variant="secondary">
+        <Clock aria-hidden />
+        Registration Closed
       </Badge>
     );
   if (event.registered_count >= event.seat_limit)

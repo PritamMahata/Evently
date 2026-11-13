@@ -13,11 +13,16 @@ export function assertSameOrigin(req: NextRequest) {
     } catch {
       /* invalid origin falls through to rejection */
     }
-    const allowed = new Set([host, getEnv().appUrl ? new URL(getEnv().appUrl).host : null]);
-    if (!originHost || !allowed.has(originHost)) throw new AppError("FORBIDDEN", "Cross-site request blocked.");
+    const allowed = new Set([
+      host,
+      getEnv().appUrl ? new URL(getEnv().appUrl).host : null,
+    ]);
+    if (!originHost || !allowed.has(originHost))
+      throw new AppError("FORBIDDEN", "Cross-site request blocked.");
     return;
   }
-  if (req.headers.get("sec-fetch-site") === "cross-site") throw new AppError("FORBIDDEN", "Cross-site request blocked.");
+  if (req.headers.get("sec-fetch-site") === "cross-site")
+    throw new AppError("FORBIDDEN", "Cross-site request blocked.");
 }
 
 export { parseWith } from "@/lib/validation/parse";
@@ -34,13 +39,27 @@ export async function readJson(req: NextRequest): Promise<unknown> {
 
 export function errorResponse(err: unknown) {
   if (err instanceof AppError)
-    return NextResponse.json({ error: { code: err.code, message: err.message, fields: err.fields } }, { status: err.status });
+    return NextResponse.json(
+      { error: { code: err.code, message: err.message, fields: err.fields } },
+      { status: err.status },
+    );
   console.error("[api] unexpected error:", err);
-  return NextResponse.json({ error: { code: "INTERNAL", message: "Something went wrong. Please try again." } }, { status: 500 });
+  return NextResponse.json(
+    {
+      error: {
+        code: "INTERNAL",
+        message: "Something went wrong. Please try again.",
+      },
+    },
+    { status: 500 },
+  );
 }
 
 /** Wraps a handler: CSRF check for mutations, uniform JSON error responses. */
-export function route<C = unknown>(handler: (req: NextRequest, ctx: C) => Promise<Response>, opts: { mutation?: boolean } = {}) {
+export function route<C = unknown>(
+  handler: (req: NextRequest, ctx: C) => Promise<Response>,
+  opts: { mutation?: boolean } = {},
+) {
   return async (req: NextRequest, ctx: C) => {
     try {
       if (opts.mutation) assertSameOrigin(req);

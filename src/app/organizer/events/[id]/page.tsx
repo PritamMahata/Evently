@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/table";
 import {
   formatDate,
+  formatDateTime,
   formatDateTimeStamp,
   formatTime,
   seatsRemaining,
@@ -62,6 +63,14 @@ export default async function OrganizerEventPage({
             })}{" "}
             at {formatTime(event.event_time)} — {event.venue}
           </p>
+          {event.event_deadline && (
+            <p className="text-sm text-muted-foreground">
+              Registration deadline:{" "}
+              <span className="font-medium text-foreground">
+                {formatDateTime(event.event_deadline)}
+              </span>
+            </p>
+          )}
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <WhatsAppShareButton

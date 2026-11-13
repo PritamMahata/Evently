@@ -1,0 +1,9 @@
+$kind: http-request
+name: 'Export Attendees (CSV)'
+method: GET
+url: '{{base_url}}/api/organizer/events/{{event_id}}/attendees/export'
+order: 3000
+pathVariables:
+  - key: event_id
+    value: '{{event_id}}'
+    description: UUID of the event to export attendees for

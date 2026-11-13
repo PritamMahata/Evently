@@ -1,0 +1,9 @@
+$kind: http-request
+name: 'Cancel Event'
+method: POST
+url: '{{base_url}}/api/events/{{event_id}}/cancel'
+order: 5000
+pathVariables:
+  - key: event_id
+    value: '{{event_id}}'
+    description: UUID of the event to cancel

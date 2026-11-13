@@ -1,0 +1,24 @@
+$kind: http-request
+name: 'Update Event'
+method: PATCH
+url: '{{base_url}}/api/events/{{event_id}}'
+order: 4000
+pathVariables:
+  - key: event_id
+    value: '{{event_id}}'
+    description: UUID of the event to update
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "title": "Tech Meetup 2026 (Updated)",
+      "description": "A community gathering for developers to share ideas and network.",
+      "eventDate": "2026-12-15",
+      "eventTime": "19:00",
+      "venue": "Innovation Hub, 123 Main St",
+      "seatLimit": 150,
+      "bannerUrl": ""
+    }

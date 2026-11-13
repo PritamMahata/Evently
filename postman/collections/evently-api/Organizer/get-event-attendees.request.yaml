@@ -1,0 +1,9 @@
+$kind: http-request
+name: 'Get Event Attendees'
+method: GET
+url: '{{base_url}}/api/organizer/events/{{event_id}}/attendees'
+order: 2000
+pathVariables:
+  - key: event_id
+    value: '{{event_id}}'
+    description: UUID of the event whose attendees to retrieve

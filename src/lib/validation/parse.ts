@@ -13,6 +13,11 @@ export function fieldErrors(err: ZodError): Record<string, string> {
 /** Validates untrusted input, throwing an AppError with per-field messages. */
 export function parseWith<T>(schema: ZodType<T>, data: unknown): T {
   const res = schema.safeParse(data);
-  if (!res.success) throw new AppError("VALIDATION_ERROR", "Please check the highlighted fields.", fieldErrors(res.error));
+  if (!res.success)
+    throw new AppError(
+      "VALIDATION_ERROR",
+      "Please check the highlighted fields.",
+      fieldErrors(res.error),
+    );
   return res.data;
 }

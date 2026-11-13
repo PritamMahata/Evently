@@ -1,0 +1,9 @@
+$kind: http-request
+name: 'Get Event'
+method: GET
+url: '{{base_url}}/api/events/{{event_id}}'
+order: 3000
+pathVariables:
+  - key: event_id
+    value: '{{event_id}}'
+    description: UUID of the event

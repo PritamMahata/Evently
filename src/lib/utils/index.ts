@@ -6,9 +6,19 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /** Formats a YYYY-MM-DD string without timezone drift. */
-export function formatDate(date: string, opts: Intl.DateTimeFormatOptions = { weekday: "short", day: "numeric", month: "short", year: "numeric" }) {
+export function formatDate(
+  date: string,
+  opts: Intl.DateTimeFormatOptions = {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  },
+) {
   const [y, m, d] = date.split("-").map(Number);
-  return new Intl.DateTimeFormat("en-GB", { ...opts, timeZone: "UTC" }).format(new Date(Date.UTC(y, m - 1, d)));
+  return new Intl.DateTimeFormat("en-GB", { ...opts, timeZone: "UTC" }).format(
+    new Date(Date.UTC(y, m - 1, d)),
+  );
 }
 
 /** Formats HH:MM as a 12-hour time. */
@@ -18,10 +28,36 @@ export function formatTime(time: string) {
   return `${h % 12 || 12}:${String(m).padStart(2, "0")} ${suffix}`;
 }
 
-export function formatDateTimeStamp(d: Date | string) {
-  return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit", timeZone: "UTC" }).format(new Date(d)) + " UTC";
+export function formatDateTime(d: Date | string) {
+  if (!d) return "";
+  const dateObj = new Date(d);
+  if (Number.isNaN(dateObj.getTime())) return String(d);
+  return new Intl.DateTimeFormat("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(dateObj);
 }
 
-export function seatsRemaining(e: { seat_limit: number; registered_count: number }) {
+export function formatDateTimeStamp(d: Date | string) {
+  return (
+    new Intl.DateTimeFormat("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      timeZone: "UTC",
+    }).format(new Date(d)) + " UTC"
+  );
+}
+
+export function seatsRemaining(e: {
+  seat_limit: number;
+  registered_count: number;
+}) {
   return Math.max(0, e.seat_limit - e.registered_count);
 }

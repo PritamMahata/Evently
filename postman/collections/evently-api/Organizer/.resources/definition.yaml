@@ -1,0 +1,3 @@
+$kind: collection
+name: Organizer
+description: Organizer-only endpoints — manage your events, view attendees, and export attendee lists as CSV.

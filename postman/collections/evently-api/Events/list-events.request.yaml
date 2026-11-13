@@ -1,0 +1,19 @@
+$kind: http-request
+name: 'List Upcoming Events'
+method: GET
+url: '{{base_url}}/api/events?when=any&availability=any&page=1'
+order: 1000
+queryParams:
+  - key: q
+    value: ''
+    description: 'Search query (optional, max 100 chars)'
+    disabled: true
+  - key: when
+    value: any
+    description: 'Filter by time: any | today | week | month'
+  - key: availability
+    value: any
+    description: 'Filter by seat availability: any | available'
+  - key: page
+    value: '1'
+    description: 'Page number (1–1000)'

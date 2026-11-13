@@ -6,6 +6,7 @@ import {
   CalendarPlus,
   CheckCircle2,
   Clock,
+  Hourglass,
   Info,
   MapPin,
   User,
@@ -15,7 +16,7 @@ import { getSessionUser } from "@/lib/auth/session";
 import { getEvent } from "@/server/services/events.service";
 import { loadEvent } from "@/server/page-data";
 import { canAttendeeCancelRsvp, isRegistered } from "@/server/services/registrations.service";
-import { formatDate, formatTime, seatsRemaining } from "@/lib/utils";
+import { formatDate, formatDateTime, formatTime, seatsRemaining } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -101,6 +102,16 @@ export default async function EventDetailPage({
         <AlertDescription>Registration is closed.</AlertDescription>
       </Alert>
     );
+  } else if (event.is_past_deadline) {
+    action = (
+      <Alert variant="destructive">
+        <Hourglass />
+        <AlertTitle>Registration deadline passed</AlertTitle>
+        <AlertDescription>
+          Registration closed on {formatDateTime(event.event_deadline)}.
+        </AlertDescription>
+      </Alert>
+    );
   } else if (left === 0) {
     action = (
       <Alert variant="warning">
@@ -167,7 +178,7 @@ export default async function EventDetailPage({
             Hosted by {event.organizer_name}
           </p>
         </div>
-        <ul className="grid gap-4 rounded-xl border bg-card p-5 sm:grid-cols-3">
+        <ul className="grid gap-4 rounded-xl border bg-card p-5 sm:grid-cols-2 lg:grid-cols-2">
           <li className="flex items-start gap-3">
             <CalendarDays className="mt-0.5 size-5 text-primary" aria-hidden />
             <div>
@@ -187,6 +198,15 @@ export default async function EventDetailPage({
             <div>
               <p className="text-xs text-muted-foreground">Time</p>
               <p className="font-medium">{formatTime(event.event_time)}</p>
+            </div>
+          </li>
+          <li className="flex items-start gap-3">
+            <Hourglass className="mt-0.5 size-5 text-primary" aria-hidden />
+            <div>
+              <p className="text-xs text-muted-foreground">Registration Deadline</p>
+              <p className="font-medium">
+                {event.event_deadline ? formatDateTime(event.event_deadline) : "N/A"}
+              </p>
             </div>
           </li>
           <li className="flex items-start gap-3">

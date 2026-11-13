@@ -10,7 +10,8 @@ export function getEnv() {
     timezone: process.env.APP_TIMEZONE || "UTC",
     appUrl: process.env.APP_URL || "http://localhost:3000",
     resendApiKey: process.env.RESEND_API_KEY || "",
-    resendFromEmail: process.env.RESEND_FROM_EMAIL || "Evently <onboarding@resend.dev>",
+    resendFromEmail:
+      process.env.RESEND_FROM_EMAIL || "Evently <onboarding@resend.dev>",
     cloudinaryUrl: process.env.CLOUDINARY_URL || "",
     cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || "",
     cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || "",

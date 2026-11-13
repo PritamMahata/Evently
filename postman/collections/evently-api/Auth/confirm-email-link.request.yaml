@@ -1,0 +1,9 @@
+$kind: http-request
+name: 'Confirm Email (GET link)'
+method: GET
+url: '{{base_url}}/api/auth/confirm-email?token={{confirmation_token}}'
+order: 6000
+queryParams:
+  - key: token
+    value: '{{confirmation_token}}'
+    description: Email confirmation token received in the verification email

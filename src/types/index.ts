@@ -25,12 +25,14 @@ export interface EventRecord {
   description: string;
   event_date: string; // YYYY-MM-DD
   event_time: string; // HH:MM
+  event_deadline: string; // ISO string / timestamp
   venue: string;
   seat_limit: number;
   status: EventStatus;
   banner_url?: string | null;
   registered_count: number;
   is_past: boolean;
+  is_past_deadline?: boolean;
   created_at: Date;
   updated_at: Date;
 }

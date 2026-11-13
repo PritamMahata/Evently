@@ -1,0 +1,14 @@
+$kind: http-request
+name: 'Resend Confirmation Email'
+method: POST
+url: '{{base_url}}/api/auth/resend-confirmation'
+order: 7000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "demo.attendee@example.com"
+    }
